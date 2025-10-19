@@ -1,19 +1,25 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Star, 
-  MapPin, 
-  Users, 
-  Bed, 
-  Bath, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Star,
+  MapPin,
+  Users,
+  Bed,
+  Bath,
   Home,
   CheckCircle2,
   ExternalLink,
-  Award
-} from 'lucide-react';
-import type { Listing } from '@/types';
+  Award,
+} from "lucide-react";
+import type { Listing } from "@/types";
 
 interface PropertyDetailsProps {
   listing: Listing | null;
@@ -41,10 +47,10 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
   const { property, host, price, rating, numberOfReviews, url } = listing;
 
   const propertyTypeLabels = {
-    apartment: 'Apartamento',
-    house: 'Casa',
-    room: 'Quarto',
-    other: 'Outro',
+    apartment: "Apartamento",
+    house: "Casa",
+    room: "Quarto",
+    other: "Outro",
   };
 
   return (
@@ -97,13 +103,19 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
               <span className="font-semibold text-gray-900">{host.name}</span>
               <div className="flex gap-2">
                 {host.isSuperhost && (
-                  <Badge variant="secondary" className="bg-rose-100 text-rose-700">
+                  <Badge
+                    variant="secondary"
+                    className="bg-rose-100 text-rose-700"
+                  >
                     <Award className="h-3 w-3 mr-1" />
                     Superhost
                   </Badge>
                 )}
                 {host.verified && (
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-700"
+                  >
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     Verificado
                   </Badge>
@@ -111,9 +123,10 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
               </div>
             </div>
             <p className="text-sm text-gray-600">
-              Membro desde {new Date(host.joinDate).toLocaleDateString('pt-BR', { 
-                month: 'long', 
-                year: 'numeric' 
+              Membro desde{" "}
+              {new Date(host.joinDate).toLocaleDateString("pt-BR", {
+                month: "long",
+                year: "numeric",
               })}
             </p>
           </CardContent>
@@ -132,33 +145,37 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-gray-500" />
                 <div>
-                  <div className="text-sm font-semibold">{property.capacity} hóspedes</div>
+                  <div className="text-sm font-semibold">
+                    {property.capacity} hóspedes
+                  </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Bed className="h-5 w-5 text-gray-500" />
                 <div>
                   <div className="text-sm font-semibold">
-                    {property.bedrooms} {property.bedrooms === 1 ? 'quarto' : 'quartos'}
+                    {property.bedrooms}{" "}
+                    {property.bedrooms === 1 ? "quarto" : "quartos"}
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Bed className="h-5 w-5 text-gray-500" />
                 <div>
                   <div className="text-sm font-semibold">
-                    {property.beds} {property.beds === 1 ? 'cama' : 'camas'}
+                    {property.beds} {property.beds === 1 ? "cama" : "camas"}
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Bath className="h-5 w-5 text-gray-500" />
                 <div>
                   <div className="text-sm font-semibold">
-                    {property.bathrooms} {property.bathrooms === 1 ? 'banheiro' : 'banheiros'}
+                    {property.bathrooms}{" "}
+                    {property.bathrooms === 1 ? "banheiro" : "banheiros"}
                   </div>
                 </div>
               </div>

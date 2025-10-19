@@ -1,6 +1,13 @@
-import { Button } from '@/components/ui/button';
-import { Maximize2, ZoomIn, ZoomOut, Flame, Users, DollarSign } from 'lucide-react';
-import type { HeatmapMode } from '@/types';
+import { Button } from "@/components/ui/button";
+import {
+  Maximize2,
+  ZoomIn,
+  ZoomOut,
+  Flame,
+  Users,
+  DollarSign,
+} from "lucide-react";
+import type { HeatmapMode } from "@/types";
 
 interface MapControlsProps {
   onZoomIn: () => void;
@@ -28,7 +35,7 @@ export default function MapControls({
           size="icon"
           onClick={onFullWidth}
           className="h-10 w-10"
-          title={isFullWidth ? 'Restaurar tamanho' : 'Tela cheia'}
+          title={isFullWidth ? "Restaurar tamanho" : "Tela cheia"}
         >
           <Maximize2 className="h-5 w-5" />
         </Button>
@@ -61,11 +68,11 @@ export default function MapControls({
         <div className="text-xs font-semibold text-gray-700 px-2 py-1">
           Mapa de Calor
         </div>
-        
+
         <Button
-          variant={heatmapMode === 'none' ? 'default' : 'ghost'}
+          variant={heatmapMode === "none" ? "default" : "ghost"}
           size="sm"
-          onClick={() => onHeatmapModeChange('none')}
+          onClick={() => onHeatmapModeChange("none")}
           className="w-full justify-start text-xs h-8"
         >
           <Flame className="h-4 w-4 mr-2" />
@@ -73,9 +80,9 @@ export default function MapControls({
         </Button>
 
         <Button
-          variant={heatmapMode === 'density' ? 'default' : 'ghost'}
+          variant={heatmapMode === "density" ? "default" : "ghost"}
           size="sm"
-          onClick={() => onHeatmapModeChange('density')}
+          onClick={() => onHeatmapModeChange("density")}
           className="w-full justify-start text-xs h-8"
         >
           <Users className="h-4 w-4 mr-2" />
@@ -83,9 +90,9 @@ export default function MapControls({
         </Button>
 
         <Button
-          variant={heatmapMode === 'price' ? 'default' : 'ghost'}
+          variant={heatmapMode === "price" ? "default" : "ghost"}
           size="sm"
-          onClick={() => onHeatmapModeChange('price')}
+          onClick={() => onHeatmapModeChange("price")}
           className="w-full justify-start text-xs h-8"
         >
           <DollarSign className="h-4 w-4 mr-2" />

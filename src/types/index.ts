@@ -12,7 +12,7 @@ export interface Property {
   id: string;
   name: string;
   description: string;
-  type: 'apartment' | 'house' | 'room' | 'other';
+  type: "apartment" | "house" | "room" | "other";
   capacity: number;
   bedrooms: number;
   beds: number;
@@ -65,4 +65,4 @@ export interface HeatmapPoint {
   intensity: number;
 }
 
-export type HeatmapMode = 'none' | 'density' | 'price';
+export type HeatmapMode = "none" | "density" | "price";

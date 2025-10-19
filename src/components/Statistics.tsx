@@ -1,10 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Star, Home, DollarSign } from 'lucide-react';
-import api from '@/services/api';
-import type { NeighborhoodStats } from '@/types';
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { TrendingUp, Star, Home, DollarSign } from "lucide-react";
+import api from "@/services/api";
+import type { NeighborhoodStats } from "@/types";
 
 export default function Statistics() {
   const [stats, setStats] = useState<NeighborhoodStats[]>([]);
@@ -16,7 +31,7 @@ export default function Statistics() {
         const data = await api.getNeighborhoodStats();
         setStats(data);
       } catch (error) {
-        console.error('Erro ao carregar estatísticas:', error);
+        console.error("Erro ao carregar estatísticas:", error);
       } finally {
         setLoading(false);
       }
@@ -39,10 +54,12 @@ export default function Statistics() {
   // Calcular totais gerais
   const totalListings = stats.reduce((sum, s) => sum + s.totalListings, 0);
   const overallAvgPrice = Math.round(
-    stats.reduce((sum, s) => sum + s.averagePrice * s.totalListings, 0) / totalListings
+    stats.reduce((sum, s) => sum + s.averagePrice * s.totalListings, 0) /
+      totalListings
   );
   const overallAvgRating = (
-    stats.reduce((sum, s) => sum + s.averageRating * s.totalListings, 0) / totalListings
+    stats.reduce((sum, s) => sum + s.averageRating * s.totalListings, 0) /
+    totalListings
   ).toFixed(2);
 
   return (
@@ -68,7 +85,9 @@ export default function Statistics() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{totalListings}</div>
+              <div className="text-3xl font-bold text-gray-900">
+                {totalListings}
+              </div>
               <p className="text-xs text-gray-500 mt-1">
                 Distribuídas em {stats.length} bairros
               </p>
@@ -98,7 +117,9 @@ export default function Statistics() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{overallAvgRating}</div>
+              <div className="text-3xl font-bold text-gray-900">
+                {overallAvgRating}
+              </div>
               <p className="text-xs text-gray-500 mt-1">De 5.0 estrelas</p>
             </CardContent>
           </Card>
@@ -117,27 +138,33 @@ export default function Statistics() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={stats}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="neighborhood" 
-                  angle={-45} 
-                  textAnchor="end" 
+                <XAxis
+                  dataKey="neighborhood"
+                  angle={-45}
+                  textAnchor="end"
                   height={100}
                   tick={{ fontSize: 12 }}
                 />
-                <YAxis 
+                <YAxis
                   tick={{ fontSize: 12 }}
-                  label={{ value: 'R$', angle: -90, position: 'insideLeft' }}
+                  label={{ value: "R$", angle: -90, position: "insideLeft" }}
                 />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: number) => `R$ ${value}`}
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }}
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                  }}
                 />
                 <Legend />
-                <Bar 
-                  dataKey="averagePrice" 
-                  fill="#E11D48" 
+                <Bar
+                  dataKey="averagePrice"
+                  fill="#E11D48"
                   name="Preço Médio (R$)"
                   radius={[8, 8, 0, 0]}
                 />
@@ -159,28 +186,38 @@ export default function Statistics() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={stats}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="neighborhood" 
-                  angle={-45} 
-                  textAnchor="end" 
+                <XAxis
+                  dataKey="neighborhood"
+                  angle={-45}
+                  textAnchor="end"
                   height={100}
                   tick={{ fontSize: 12 }}
                 />
-                <YAxis 
-                  domain={[0, 5]} 
+                <YAxis
+                  domain={[0, 5]}
                   tick={{ fontSize: 12 }}
-                  label={{ value: 'Estrelas', angle: -90, position: 'insideLeft' }}
+                  label={{
+                    value: "Estrelas",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: number) => `${value} ⭐`}
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }}
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                  }}
                 />
                 <Legend />
-                <Bar 
-                  dataKey="averageRating" 
-                  fill="#F59E0B" 
+                <Bar
+                  dataKey="averageRating"
+                  fill="#F59E0B"
                   name="Avaliação Média"
                   radius={[8, 8, 0, 0]}
                 />
@@ -214,7 +251,9 @@ export default function Statistics() {
                       <td className="px-4 py-3 font-medium text-gray-900">
                         {stat.neighborhood}
                       </td>
-                      <td className="px-4 py-3 text-right">{stat.totalListings}</td>
+                      <td className="px-4 py-3 text-right">
+                        {stat.totalListings}
+                      </td>
                       <td className="px-4 py-3 text-right font-semibold text-green-600">
                         R$ {stat.averagePrice}
                       </td>

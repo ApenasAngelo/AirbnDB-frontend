@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Dashboard Airbnb Rio de Janeiro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web desenvolvida como projeto acadêmico para a disciplina de Banco de Dados. Visualização interativa de dados de acomodações do Airbnb na cidade do Rio de Janeiro.
 
-Currently, two official plugins are available:
+## 🎯 Sobre o Projeto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este projeto demonstra a modelagem e visualização de um banco de dados de acomodações do Airbnb no Rio de Janeiro. A interface foi inspirada no design original do Airbnb.
 
-## React Compiler
+### Funcionalidades Principais
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🗺️ **Mapa Interativo**: Visualização geográfica de todas as acomodações
+- 🔥 **Mapas de Calor**: Dois modos de heatmap
+  - Densidade: Mostra áreas com maior concentração de acomodações
+  - Preço: Mostra áreas com acomodações mais caras
+- 📊 **Estatísticas**: Análise agregada por bairro
+  - Preço médio por bairro
+  - Avaliação média por bairro
+  - Total de acomodações
+- 🏠 **Detalhes Completos**: Informações detalhadas de cada propriedade
+  - Dados do anfitrião
+  - Comodidades
+  - Avaliações
+  - Capacidade e quartos
+- 🔍 **Interface Responsiva**: Painel redimensionável para melhor visualização
 
-## Expanding the ESLint configuration
+## 📦 Instalação
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Pré-requisitos
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (versão 18 ou superior)
+- pnpm (recomendado) ou npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Passos para instalação
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone o repositório:
+
+```bash
+git clone <url-do-repositorio>
+cd trabalho-bd-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Instale as dependências:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+# ou
+npm install
 ```
+
+3. Inicie o servidor de desenvolvimento:
+
+```bash
+pnpm dev
+# ou
+npm run dev
+```
+
+4. Acesse a aplicação em `http://localhost:5173`

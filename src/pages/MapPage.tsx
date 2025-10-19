@@ -1,27 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  ResizablePanelGroup, 
-  ResizablePanel, 
-  ResizableHandle 
-} from '@/components/ui/resizable';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
-import InteractiveMap from '@/components/InteractiveMap';
-import PropertyDetails from '@/components/PropertyDetails';
-import Statistics from '@/components/Statistics';
-import api from '@/services/api';
-import type { Listing, HeatmapMode, HeatmapPoint } from '@/types';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import InteractiveMap from "@/components/InteractiveMap";
+import PropertyDetails from "@/components/PropertyDetails";
+import Statistics from "@/components/Statistics";
+import api from "@/services/api";
+import type { Listing, HeatmapMode, HeatmapPoint } from "@/types";
 
 export default function MapPage() {
   const navigate = useNavigate();
   const [listings, setListings] = useState<Listing[]>([]);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
-  const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('none');
+  const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>("none");
   const [isFullWidth, setIsFullWidth] = useState(false);
-  const [densityHeatmapData, setDensityHeatmapData] = useState<HeatmapPoint[]>([]);
+  const [densityHeatmapData, setDensityHeatmapData] = useState<HeatmapPoint[]>(
+    []
+  );
   const [priceHeatmapData, setPriceHeatmapData] = useState<HeatmapPoint[]>([]);
 
   useEffect(() => {
@@ -32,12 +34,12 @@ export default function MapPage() {
           api.getDensityHeatmap(),
           api.getPriceHeatmap(),
         ]);
-        
+
         setListings(listingsData);
         setDensityHeatmapData(densityData);
         setPriceHeatmapData(priceData);
       } catch (error) {
-        console.error('Erro ao carregar dados:', error);
+        console.error("Erro ao carregar dados:", error);
       } finally {
         setLoading(false);
       }
@@ -70,7 +72,7 @@ export default function MapPage() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="hover:bg-gray-100"
             >
               <Home className="h-5 w-5" />
@@ -84,7 +86,7 @@ export default function MapPage() {
               </p>
             </div>
           </div>
-          
+
           <div className="text-right">
             <p className="text-sm text-gray-600">Rio de Janeiro</p>
             <p className="text-xs text-gray-500">Dados do Airbnb</p>
@@ -96,8 +98,8 @@ export default function MapPage() {
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
           {/* Map Panel */}
-          <ResizablePanel 
-            defaultSize={isFullWidth ? 100 : 60} 
+          <ResizablePanel
+            defaultSize={isFullWidth ? 100 : 60}
             minSize={30}
             className="relative"
           >
@@ -127,12 +129,18 @@ export default function MapPage() {
                   <TabsTrigger value="details">Detalhes</TabsTrigger>
                   <TabsTrigger value="statistics">Estatísticas</TabsTrigger>
                 </TabsList>
-                
-                <TabsContent value="details" className="flex-1 mt-0 overflow-hidden">
+
+                <TabsContent
+                  value="details"
+                  className="flex-1 mt-0 overflow-hidden"
+                >
                   <PropertyDetails listing={selectedListing} />
                 </TabsContent>
-                
-                <TabsContent value="statistics" className="flex-1 mt-0 overflow-hidden">
+
+                <TabsContent
+                  value="statistics"
+                  className="flex-1 mt-0 overflow-hidden"
+                >
                   <Statistics />
                 </TabsContent>
               </Tabs>

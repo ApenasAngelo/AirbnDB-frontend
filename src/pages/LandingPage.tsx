@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { MapPin, Database, TrendingUp } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { MapPin, Database, TrendingUp } from "lucide-react";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -24,14 +24,12 @@ export default function LandingPage() {
           <div className="space-y-4">
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
               Explore Acomodações do
-              <span className="block text-rose-500 mt-2">
-                Rio de Janeiro
-              </span>
+              <span className="block text-rose-500 mt-2">Rio de Janeiro</span>
             </h2>
-            
+
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Projeto acadêmico de Banco de Dados - Visualização interativa de dados 
-              de acomodações Airbnb na cidade maravilhosa
+              Projeto acadêmico de Banco de Dados - Visualização interativa de
+              dados de acomodações Airbnb na cidade maravilhosa
             </p>
           </div>
 
@@ -41,7 +39,8 @@ export default function LandingPage() {
               <MapPin className="h-12 w-12 text-rose-500 mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">Mapa Interativo</h3>
               <p className="text-gray-600 text-sm">
-                Visualize todas as acomodações em um mapa com controles avançados e mapas de calor
+                Visualize todas as acomodações em um mapa com controles
+                avançados e mapas de calor
               </p>
             </div>
 
@@ -49,7 +48,8 @@ export default function LandingPage() {
               <Database className="h-12 w-12 text-rose-500 mx-auto mb-4" />
               <h3 className="font-semibold text-lg mb-2">Dados Completos</h3>
               <p className="text-gray-600 text-sm">
-                Acesse informações detalhadas sobre cada propriedade, host e avaliações
+                Acesse informações detalhadas sobre cada propriedade, host e
+                avaliações
               </p>
             </div>
 
@@ -65,7 +65,7 @@ export default function LandingPage() {
           {/* CTA Button */}
           <div className="pt-8">
             <Button
-              onClick={() => navigate('/map')}
+              onClick={() => navigate("/map")}
               size="lg"
               className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
@@ -75,11 +75,10 @@ export default function LandingPage() {
 
           {/* Info Footer */}
           <div className="pt-12 text-sm text-gray-500 space-y-2">
+            <p>📚 Trabalho da disciplina de Banco de Dados</p>
             <p>
-              📚 Trabalho da disciplina de Banco de Dados
-            </p>
-            <p>
-              🗃️ Dataset: Airbnb Rio de Janeiro | 🛠️ Tecnologias: React + TypeScript + MySQL
+              🗃️ Dataset: Airbnb Rio de Janeiro | 🛠️ Tecnologias: React +
+              TypeScript + MySQL
             </p>
           </div>
         </div>
@@ -87,7 +86,9 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="absolute bottom-0 w-full py-6 text-center text-sm text-gray-500 border-t bg-white/50">
-        <p>© 2025 - Projeto Acadêmico | Dados simulados para fins educacionais</p>
+        <p>
+          © 2025 - Projeto Acadêmico | Dados simulados para fins educacionais
+        </p>
       </footer>
     </div>
   );

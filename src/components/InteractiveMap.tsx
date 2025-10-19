@@ -1,10 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet.heat';
-import { createCustomMarkerIcon } from './CustomMarker';
-import MapControls from './MapControls';
-import type { Listing, HeatmapMode, HeatmapPoint } from '@/types';
+import { useEffect, useRef } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet.heat";
+import { createCustomMarkerIcon } from "./CustomMarker";
+import MapControls from "./MapControls";
+import type { Listing, HeatmapMode, HeatmapPoint } from "@/types";
 
 interface InteractiveMapProps {
   listings: Listing[];
@@ -19,11 +25,11 @@ interface InteractiveMapProps {
 }
 
 // Componente para controlar o mapa
-function MapController({ 
-  heatmapMode, 
-  densityHeatmapData, 
-  priceHeatmapData 
-}: { 
+function MapController({
+  heatmapMode,
+  densityHeatmapData,
+  priceHeatmapData,
+}: {
   heatmapMode: HeatmapMode;
   densityHeatmapData: HeatmapPoint[];
   priceHeatmapData: HeatmapPoint[];
@@ -39,8 +45,9 @@ function MapController({
     }
 
     // Adicionar nova camada de calor se necessário
-    if (heatmapMode !== 'none') {
-      const data = heatmapMode === 'density' ? densityHeatmapData : priceHeatmapData;
+    if (heatmapMode !== "none") {
+      const data =
+        heatmapMode === "density" ? densityHeatmapData : priceHeatmapData;
       const heatData: [number, number, number][] = data.map((point) => [
         point.lat,
         point.lng,
@@ -54,9 +61,10 @@ function MapController({
         blur: 35,
         maxZoom: 17,
         max: 1.0,
-        gradient: heatmapMode === 'price' 
-          ? { 0.0: 'blue', 0.5: 'yellow', 1.0: 'red' }
-          : { 0.0: 'blue', 0.5: 'lime', 1.0: 'red' },
+        gradient:
+          heatmapMode === "price"
+            ? { 0.0: "blue", 0.5: "yellow", 1.0: "red" }
+            : { 0.0: "blue", 0.5: "lime", 1.0: "red" },
       });
 
       heatLayer.addTo(map);
@@ -84,15 +92,15 @@ function MapResizeHandler() {
     };
 
     // Adicionar listener para evento de resize
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Trigger inicial
     setTimeout(() => {
       map.invalidateSize();
     }, 100);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [map]);
 
@@ -155,21 +163,22 @@ export default function InteractiveMap({
         />
 
         {/* Marcadores de listagens - mostrar apenas se heatmap estiver desligado ou no modo none */}
-        {(heatmapMode === 'none') && listings.map((listing) => (
-          <Marker
-            key={listing.id}
-            position={[listing.property.latitude, listing.property.longitude]}
-            icon={createCustomMarkerIcon({
-              price: listing.price,
-              isSelected: selectedListing?.id === listing.id,
-            })}
-            eventHandlers={{
-              click: () => {
-                onListingSelect(listing);
-              },
-            }}
-          />
-        ))}
+        {heatmapMode === "none" &&
+          listings.map((listing) => (
+            <Marker
+              key={listing.id}
+              position={[listing.property.latitude, listing.property.longitude]}
+              icon={createCustomMarkerIcon({
+                price: listing.price,
+                isSelected: selectedListing?.id === listing.id,
+              })}
+              eventHandlers={{
+                click: () => {
+                  onListingSelect(listing);
+                },
+              }}
+            />
+          ))}
 
         <MapController
           heatmapMode={heatmapMode}
