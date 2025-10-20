@@ -29,12 +29,11 @@ export default function MapControls({
   return (
     <div className="absolute top-4 right-4 z-1000 space-y-2">
       {/* Full Width Button */}
-      <div className="bg-white rounded-lg shadow-md">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <Button
           variant="ghost"
           size="icon"
           onClick={onFullWidth}
-          className="h-10 w-10"
           title={isFullWidth ? "Restaurar tamanho" : "Tela cheia"}
         >
           <Maximize2 className="h-5 w-5" />
@@ -42,12 +41,12 @@ export default function MapControls({
       </div>
 
       {/* Zoom Controls */}
-      <div className="bg-white rounded-lg shadow-md flex flex-col">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <Button
           variant="ghost"
           size="icon"
           onClick={onZoomIn}
-          className="h-10 w-10 rounded-b-none border-b"
+          className="rounded-none border-b"
           title="Aumentar zoom"
         >
           <ZoomIn className="h-5 w-5" />
@@ -56,7 +55,7 @@ export default function MapControls({
           variant="ghost"
           size="icon"
           onClick={onZoomOut}
-          className="h-10 w-10 rounded-t-none"
+          className="rounded-none"
           title="Diminuir zoom"
         >
           <ZoomOut className="h-5 w-5" />
