@@ -27,7 +27,7 @@ export default function MapControls({
   isFullWidth,
 }: MapControlsProps) {
   return (
-    <div className="absolute top-4 right-4 z-1000 space-y-2">
+    <div className="absolute top-4 right-4 z-1000 flex flex-col items-end gap-2">
       {/* Full Width Button */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <Button
@@ -41,7 +41,7 @@ export default function MapControls({
       </div>
 
       {/* Zoom Controls */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
         <Button
           variant="ghost"
           size="icon"

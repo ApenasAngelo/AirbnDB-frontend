@@ -154,6 +154,7 @@ export default function InteractiveMap({
         center={[-22.9519, -43.2105]}
         zoom={12}
         scrollWheelZoom={true}
+        zoomControl={false}
         className="h-full w-full z-0"
         ref={mapRef}
       >
