@@ -87,12 +87,16 @@ function MapResizeHandler() {
   const map = useMap();
 
   useEffect(() => {
-    const handleResize = () => {
-      map.invalidateSize();
-    };
+    const container = map.getContainer();
 
-    // Adicionar listener para evento de resize
-    window.addEventListener("resize", handleResize);
+    // Usar ResizeObserver para detectar mudanças de tamanho no container
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+
+    if (container) {
+      resizeObserver.observe(container);
+    }
 
     // Trigger inicial
     setTimeout(() => {
@@ -100,7 +104,10 @@ function MapResizeHandler() {
     }, 100);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      if (container) {
+        resizeObserver.unobserve(container);
+      }
+      resizeObserver.disconnect();
     };
   }, [map]);
 

@@ -97,30 +97,6 @@ export default function MapPage() {
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
-          {/* Map Panel */}
-          <ResizablePanel
-            defaultSize={isFullWidth ? 100 : 60}
-            minSize={30}
-            className="relative"
-          >
-            <InteractiveMap
-              listings={listings}
-              selectedListing={selectedListing}
-              onListingSelect={setSelectedListing}
-              heatmapMode={heatmapMode}
-              onHeatmapModeChange={setHeatmapMode}
-              onFullWidthToggle={handleFullWidthToggle}
-              isFullWidth={isFullWidth}
-              densityHeatmapData={densityHeatmapData}
-              priceHeatmapData={priceHeatmapData}
-            />
-          </ResizablePanel>
-
-          {/* Resizable Handle */}
-          {!isFullWidth && (
-            <ResizableHandle className="w-1 bg-gray-200 hover:bg-rose-300 transition-colors" />
-          )}
-
           {/* Details Panel */}
           {!isFullWidth && (
             <ResizablePanel defaultSize={40} minSize={25}>
@@ -146,6 +122,30 @@ export default function MapPage() {
               </Tabs>
             </ResizablePanel>
           )}
+
+          {/* Resizable Handle */}
+          {!isFullWidth && (
+            <ResizableHandle className="w-1 bg-gray-200 hover:bg-rose-300 transition-colors" />
+          )}
+
+          {/* Map Panel */}
+          <ResizablePanel
+            defaultSize={isFullWidth ? 100 : 60}
+            minSize={30}
+            className="relative"
+          >
+            <InteractiveMap
+              listings={listings}
+              selectedListing={selectedListing}
+              onListingSelect={setSelectedListing}
+              heatmapMode={heatmapMode}
+              onHeatmapModeChange={setHeatmapMode}
+              onFullWidthToggle={handleFullWidthToggle}
+              isFullWidth={isFullWidth}
+              densityHeatmapData={densityHeatmapData}
+              priceHeatmapData={priceHeatmapData}
+            />
+          </ResizablePanel>
         </ResizablePanelGroup>
       </div>
     </div>
