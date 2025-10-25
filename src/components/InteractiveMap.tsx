@@ -48,23 +48,47 @@ function MapController({
     if (heatmapMode !== "none") {
       const data =
         heatmapMode === "density" ? densityHeatmapData : priceHeatmapData;
-      const heatData: [number, number, number][] = data.map((point) => [
-        point.lat,
-        point.lng,
-        point.intensity,
-      ]);
+
+      // Normalizar os dados para melhor visualização
+      const intensities = data.map((point) => point.intensity);
+      const minIntensity = Math.min(...intensities);
+      const maxIntensity = Math.max(...intensities);
+
+      // Criar dados normalizados entre 0 e 1
+      const heatData: [number, number, number][] = data.map((point) => {
+        // Normalizar para escala 0-1
+        const normalizedIntensity =
+          maxIntensity > minIntensity
+            ? (point.intensity - minIntensity) / (maxIntensity - minIntensity)
+            : 0.5;
+
+        return [point.lat, point.lng, normalizedIntensity];
+      });
 
       // Criar e adicionar camada de calor
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const heatLayer = (L as any).heatLayer(heatData, {
-        radius: 25,
-        blur: 35,
+        radius: 30,
+        blur: 25,
         maxZoom: 17,
-        max: 1.0,
+        max: 0.8, // Reduzir para aumentar intensidade das cores
+        minOpacity: 0.4, // Aumentar opacidade mínima
         gradient:
           heatmapMode === "price"
-            ? { 0.0: "blue", 0.5: "yellow", 1.0: "red" }
-            : { 0.0: "blue", 0.5: "lime", 1.0: "red" },
+            ? {
+                0.0: "blue",
+                0.3: "cyan",
+                0.5: "yellow",
+                0.7: "orange",
+                1.0: "red",
+              }
+            : {
+                0.0: "blue",
+                0.3: "cyan",
+                0.5: "lime",
+                0.7: "yellow",
+                1.0: "red",
+              },
       });
 
       heatLayer.addTo(map);
