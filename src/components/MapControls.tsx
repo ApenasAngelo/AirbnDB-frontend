@@ -6,6 +6,7 @@ import {
   Flame,
   Users,
   DollarSign,
+  X,
 } from "lucide-react";
 import type { HeatmapMode } from "@/types";
 
@@ -26,6 +27,8 @@ export default function MapControls({
   onHeatmapModeChange,
   isFullWidth,
 }: MapControlsProps) {
+  const isHeatmapActive = heatmapMode !== "none";
+
   return (
     <div className="absolute top-4 right-4 z-1000 flex flex-col items-end gap-2">
       {/* Full Width Button */}
@@ -62,42 +65,63 @@ export default function MapControls({
         </Button>
       </div>
 
-      {/* Heatmap Controls */}
-      <div className="bg-white rounded-lg shadow-md p-2 space-y-1">
-        <div className="text-xs font-semibold text-gray-700 px-2 py-1">
-          Mapa de Calor
+      {/* Heatmap Controls - Compact mode when disabled */}
+      {!isHeatmapActive ? (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onHeatmapModeChange("density")}
+            title="Ativar mapa de calor"
+          >
+            <Flame className="h-5 w-5" />
+          </Button>
         </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+          {/* Header com botão de fechar */}
+          <div className="flex items-center justify-between px-3 py-2 border-b bg-gray-50">
+            <div className="flex items-center gap-2">
+              <Flame className="h-4 w-4 text-rose-500" />
+              <span className="text-xs font-semibold text-gray-700">
+                Mapa de Calor
+              </span>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onHeatmapModeChange("none")}
+              className="h-6 w-6"
+              title="Desligar mapa de calor"
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
 
-        <Button
-          variant={heatmapMode === "none" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => onHeatmapModeChange("none")}
-          className="w-full justify-start text-xs h-8"
-        >
-          <Flame className="h-4 w-4 mr-2" />
-          Desligado
-        </Button>
+          {/* Opções */}
+          <div className="p-1">
+            <Button
+              variant={heatmapMode === "density" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onHeatmapModeChange("density")}
+              className="w-full justify-start text-xs h-8"
+            >
+              <Users className="h-4 w-4 mr-2" />
+              Densidade
+            </Button>
 
-        <Button
-          variant={heatmapMode === "density" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => onHeatmapModeChange("density")}
-          className="w-full justify-start text-xs h-8"
-        >
-          <Users className="h-4 w-4 mr-2" />
-          Densidade
-        </Button>
-
-        <Button
-          variant={heatmapMode === "price" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => onHeatmapModeChange("price")}
-          className="w-full justify-start text-xs h-8"
-        >
-          <DollarSign className="h-4 w-4 mr-2" />
-          Preço
-        </Button>
-      </div>
+            <Button
+              variant={heatmapMode === "price" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onHeatmapModeChange("price")}
+              className="w-full justify-start text-xs h-8"
+            >
+              <DollarSign className="h-4 w-4 mr-2" />
+              Preço
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
