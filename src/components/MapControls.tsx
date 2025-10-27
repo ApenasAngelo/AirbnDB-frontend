@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Maximize2,
+  Minimize2,
   ZoomIn,
   ZoomOut,
   Flame,
@@ -39,7 +40,11 @@ export default function MapControls({
           onClick={onFullWidth}
           title={isFullWidth ? "Restaurar tamanho" : "Tela cheia"}
         >
-          <Maximize2 className="h-5 w-5" />
+          {isFullWidth ? (
+            <Minimize2 className="h-5 w-5" />
+          ) : (
+            <Maximize2 className="h-5 w-5" />
+          )}
         </Button>
       </div>
 
