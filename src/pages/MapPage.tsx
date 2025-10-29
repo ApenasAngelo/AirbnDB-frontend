@@ -101,7 +101,7 @@ export default function MapPage() {
           {!isFullWidth && (
             <ResizablePanel defaultSize={40} minSize={25}>
               <Tabs defaultValue="details" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-2 m-4 mb-0">
+                <TabsList className="grid w-full grid-cols-2 mx-4 mt-4">
                   <TabsTrigger value="details">Detalhes</TabsTrigger>
                   <TabsTrigger value="statistics">Estatísticas</TabsTrigger>
                 </TabsList>
