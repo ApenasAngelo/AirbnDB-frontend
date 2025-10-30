@@ -15,7 +15,7 @@ import type { Listing, HeatmapMode, HeatmapPoint } from "@/types";
 interface InteractiveMapProps {
   listings: Listing[];
   selectedListing: Listing | null;
-  onListingSelect: (listing: Listing) => void;
+  onListingSelect: (listing: Listing | null) => void;
   heatmapMode: HeatmapMode;
   onHeatmapModeChange: (mode: HeatmapMode) => void;
   onFullWidthToggle: () => void;
@@ -176,7 +176,7 @@ export default function InteractiveMap({
 
   const handleMapClick = () => {
     // Desselecionar quando clicar no mapa (fora dos marcadores)
-    // onListingSelect(null); // Comentado para manter seleção
+    onListingSelect(null);
   };
 
   return (

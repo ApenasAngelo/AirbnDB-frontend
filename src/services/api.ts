@@ -216,6 +216,50 @@ export const api = {
     return mockListings;
   },
 
+  // Buscar listings com filtros (Consulta 9)
+  searchListings: async (filters: {
+    minPrice?: number | null;
+    maxPrice?: number | null;
+    neighborhoods?: string[];
+    minRating?: number | null;
+    minCapacity?: number | null;
+    minReviews?: number | null;
+    superhostOnly?: boolean;
+  }): Promise<Listing[]> => {
+    // Simular delay de rede (requisição ao backend)
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const params = new URLSearchParams();
+    // if (filters.minPrice) params.append('min_price', filters.minPrice.toString());
+    // ... etc ...
+    // const response = await fetch(`http://localhost:8000/api/listings/search?${params}`);
+    // return await response.json();
+
+    // Mock: aplicar filtros localmente (simula resposta do backend)
+    return mockListings.filter((listing) => {
+      if (filters.minPrice && listing.price < filters.minPrice) return false;
+      if (filters.maxPrice && listing.price > filters.maxPrice) return false;
+      if (
+        filters.neighborhoods &&
+        filters.neighborhoods.length > 0 &&
+        !filters.neighborhoods.includes(listing.property.neighborhood)
+      )
+        return false;
+      if (filters.minRating && listing.rating < filters.minRating) return false;
+      if (
+        filters.minCapacity &&
+        listing.property.capacity < filters.minCapacity
+      )
+        return false;
+      if (filters.minReviews && listing.numberOfReviews < filters.minReviews)
+        return false;
+      if (filters.superhostOnly && !listing.host.isSuperhost) return false;
+
+      return true;
+    });
+  },
+
   // Obter listing por ID
   getListingById: async (id: string): Promise<Listing | null> => {
     await new Promise((resolve) => setTimeout(resolve, 300));
