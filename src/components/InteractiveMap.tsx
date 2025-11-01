@@ -6,6 +6,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet.heat";
 import { createCustomMarkerIcon } from "./CustomMarker";
@@ -22,6 +23,13 @@ interface InteractiveMapProps {
   isFullWidth: boolean;
   densityHeatmapData: HeatmapPoint[];
   priceHeatmapData: HeatmapPoint[];
+  onMapMove?: (bounds: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => void;
 }
 
 // Componente para controlar o mapa
@@ -149,6 +157,52 @@ function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
   return null;
 }
 
+// Componente para detectar movimento do mapa (lazy loading)
+function MapMoveHandler({
+  onMapMove,
+}: {
+  onMapMove?: (bounds: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => void;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!onMapMove) return;
+
+    const handleMoveEnd = () => {
+      const bounds = map.getBounds();
+      const zoom = map.getZoom();
+
+      onMapMove({
+        north: bounds.getNorth(),
+        south: bounds.getSouth(),
+        east: bounds.getEast(),
+        west: bounds.getWest(),
+        zoom,
+      });
+    };
+
+    // Trigger inicial
+    handleMoveEnd();
+
+    // Eventos do mapa
+    map.on("moveend", handleMoveEnd);
+    map.on("zoomend", handleMoveEnd);
+
+    return () => {
+      map.off("moveend", handleMoveEnd);
+      map.off("zoomend", handleMoveEnd);
+    };
+  }, [map, onMapMove]);
+
+  return null;
+}
+
 export default function InteractiveMap({
   listings,
   selectedListing,
@@ -159,6 +213,7 @@ export default function InteractiveMap({
   isFullWidth,
   densityHeatmapData,
   priceHeatmapData,
+  onMapMove,
 }: InteractiveMapProps) {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -179,6 +234,20 @@ export default function InteractiveMap({
     onListingSelect(null);
   };
 
+  // Função para criar ícone personalizado do cluster
+  const createClusterCustomIcon = (cluster: L.MarkerCluster) => {
+    const count = cluster.getChildCount();
+    let size = "small";
+    if (count >= 100) size = "large";
+    else if (count >= 10) size = "medium";
+
+    return L.divIcon({
+      html: `<div class="cluster-marker cluster-${size}">${count}</div>`,
+      className: "custom-cluster-icon",
+      iconSize: L.point(40, 40, true),
+    });
+  };
+
   return (
     <div className="relative h-full w-full">
       <MapContainer
@@ -196,23 +265,36 @@ export default function InteractiveMap({
           maxZoom={20}
         />
 
-        {/* Marcadores de listagens - mostrar apenas se heatmap estiver desligado ou no modo none */}
-        {heatmapMode === "none" &&
-          listings.map((listing) => (
-            <Marker
-              key={listing.id}
-              position={[listing.property.latitude, listing.property.longitude]}
-              icon={createCustomMarkerIcon({
-                price: listing.price,
-                isSelected: selectedListing?.id === listing.id,
-              })}
-              eventHandlers={{
-                click: () => {
-                  onListingSelect(listing);
-                },
-              }}
-            />
-          ))}
+        {/* Marcadores de listagens com clustering - mostrar apenas se heatmap estiver desligado */}
+        {heatmapMode === "none" && (
+          <MarkerClusterGroup
+            chunkedLoading
+            iconCreateFunction={createClusterCustomIcon}
+            maxClusterRadius={60}
+            spiderfyOnMaxZoom={true}
+            showCoverageOnHover={false}
+            zoomToBoundsOnClick={true}
+          >
+            {listings.map((listing) => (
+              <Marker
+                key={listing.id}
+                position={[
+                  listing.property.latitude,
+                  listing.property.longitude,
+                ]}
+                icon={createCustomMarkerIcon({
+                  price: listing.price,
+                  isSelected: selectedListing?.id === listing.id,
+                })}
+                eventHandlers={{
+                  click: () => {
+                    onListingSelect(listing);
+                  },
+                }}
+              />
+            ))}
+          </MarkerClusterGroup>
+        )}
 
         <MapController
           heatmapMode={heatmapMode}
@@ -222,6 +304,7 @@ export default function InteractiveMap({
 
         <MapResizeHandler />
         <MapClickHandler onMapClick={handleMapClick} />
+        <MapMoveHandler onMapMove={onMapMove} />
       </MapContainer>
 
       <MapControls

@@ -39,6 +39,29 @@ export default function MapPage() {
     minReviews: null,
     superhostOnly: false,
   });
+  // Estado para lazy loading (desabilitado por padrão para mock data pequeno)
+  const [useLazyLoading] = useState(false);
+
+  // Handler para movimento do mapa (lazy loading)
+  const handleMapMove = async (bounds: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => {
+    if (!useLazyLoading) return;
+
+    try {
+      const results = await api.getListingsByBounds({
+        ...bounds,
+        filters: filters,
+      });
+      setFilteredListings(results);
+    } catch (error) {
+      console.error("Erro ao buscar por bounds:", error);
+    }
+  };
 
   // useEffect para buscar listings com filtros sempre que mudam
   useEffect(() => {
@@ -254,6 +277,7 @@ export default function MapPage() {
               isFullWidth={isFullWidth}
               densityHeatmapData={densityHeatmapData}
               priceHeatmapData={priceHeatmapData}
+              onMapMove={useLazyLoading ? handleMapMove : undefined}
             />
           </ResizablePanel>
         </ResizablePanelGroup>

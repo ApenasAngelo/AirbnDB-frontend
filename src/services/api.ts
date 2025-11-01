@@ -260,6 +260,83 @@ export const api = {
     });
   },
 
+  // Buscar listings por área visível do mapa (otimização para grandes volumes)
+  getListingsByBounds: async (params: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+    filters?: {
+      minPrice?: number | null;
+      maxPrice?: number | null;
+      neighborhoods?: string[];
+      minRating?: number | null;
+      minCapacity?: number | null;
+      minReviews?: number | null;
+      superhostOnly?: boolean;
+    };
+  }): Promise<Listing[]> => {
+    // Simular delay de rede menor (otimizado para queries frequentes)
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const response = await fetch(
+    //   `http://localhost:8000/api/listings/by-bounds?` +
+    //   `north=${params.north}&south=${params.south}&east=${params.east}&west=${params.west}&zoom=${params.zoom}`
+    // );
+    // return await response.json();
+
+    // Mock: filtrar por bounds e aplicar simplificação por zoom
+    let results = mockListings.filter((listing) => {
+      const lat = listing.property.latitude;
+      const lng = listing.property.longitude;
+      return (
+        lat <= params.north &&
+        lat >= params.south &&
+        lng <= params.east &&
+        lng >= params.west
+      );
+    });
+
+    // Simplificação por zoom (menos pontos em zoom distante)
+    // Zoom < 12: Mostrar apenas 20% dos pontos (melhor avaliados)
+    // Zoom 12-14: Mostrar 50% dos pontos
+    // Zoom >= 14: Mostrar todos
+    if (params.zoom < 12) {
+      results = results
+        .sort((a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews)
+        .slice(0, Math.ceil(results.length * 0.2));
+    } else if (params.zoom < 14) {
+      results = results
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, Math.ceil(results.length * 0.5));
+    }
+
+    // Aplicar filtros adicionais se fornecidos
+    if (params.filters) {
+      results = results.filter((listing) => {
+        const f = params.filters!;
+        if (f.minPrice && listing.price < f.minPrice) return false;
+        if (f.maxPrice && listing.price > f.maxPrice) return false;
+        if (
+          f.neighborhoods &&
+          f.neighborhoods.length > 0 &&
+          !f.neighborhoods.includes(listing.property.neighborhood)
+        )
+          return false;
+        if (f.minRating && listing.rating < f.minRating) return false;
+        if (f.minCapacity && listing.property.capacity < f.minCapacity)
+          return false;
+        if (f.minReviews && listing.numberOfReviews < f.minReviews) return false;
+        if (f.superhostOnly && !listing.host.isSuperhost) return false;
+        return true;
+      });
+    }
+
+    return results;
+  },
+
   // Obter listing por ID
   getListingById: async (id: string): Promise<Listing | null> => {
     await new Promise((resolve) => setTimeout(resolve, 300));
