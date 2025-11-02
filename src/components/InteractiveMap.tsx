@@ -6,7 +6,6 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet.heat";
 import { createCustomMarkerIcon } from "./CustomMarker";
@@ -234,20 +233,6 @@ export default function InteractiveMap({
     onListingSelect(null);
   };
 
-  // Função para criar ícone personalizado do cluster
-  const createClusterCustomIcon = (cluster: L.MarkerCluster) => {
-    const count = cluster.getChildCount();
-    let size = "small";
-    if (count >= 100) size = "large";
-    else if (count >= 10) size = "medium";
-
-    return L.divIcon({
-      html: `<div class="cluster-marker cluster-${size}">${count}</div>`,
-      className: "custom-cluster-icon",
-      iconSize: L.point(40, 40, true),
-    });
-  };
-
   return (
     <div className="relative h-full w-full">
       <MapContainer
@@ -265,36 +250,23 @@ export default function InteractiveMap({
           maxZoom={20}
         />
 
-        {/* Marcadores de listagens com clustering - mostrar apenas se heatmap estiver desligado */}
-        {heatmapMode === "none" && (
-          <MarkerClusterGroup
-            chunkedLoading
-            iconCreateFunction={createClusterCustomIcon}
-            maxClusterRadius={60}
-            spiderfyOnMaxZoom={true}
-            showCoverageOnHover={false}
-            zoomToBoundsOnClick={true}
-          >
-            {listings.map((listing) => (
-              <Marker
-                key={listing.id}
-                position={[
-                  listing.property.latitude,
-                  listing.property.longitude,
-                ]}
-                icon={createCustomMarkerIcon({
-                  price: listing.price,
-                  isSelected: selectedListing?.id === listing.id,
-                })}
-                eventHandlers={{
-                  click: () => {
-                    onListingSelect(listing);
-                  },
-                }}
-              />
-            ))}
-          </MarkerClusterGroup>
-        )}
+        {/* Marcadores de listagens - mostrar apenas se heatmap estiver desligado */}
+        {heatmapMode === "none" &&
+          listings.map((listing) => (
+            <Marker
+              key={listing.id}
+              position={[listing.property.latitude, listing.property.longitude]}
+              icon={createCustomMarkerIcon({
+                price: listing.price,
+                isSelected: selectedListing?.id === listing.id,
+              })}
+              eventHandlers={{
+                click: () => {
+                  onListingSelect(listing);
+                },
+              }}
+            />
+          ))}
 
         <MapController
           heatmapMode={heatmapMode}

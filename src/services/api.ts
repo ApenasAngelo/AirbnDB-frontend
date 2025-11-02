@@ -209,15 +209,17 @@ const mockListings = generateMockListings(mockProperties, mockHosts);
 
 // API Mock Service
 export const api = {
-  // Obter todos os listings
-  getListings: async (): Promise<Listing[]> => {
-    // Simular delay de rede
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return mockListings;
-  },
+  // CONSULTA UNIFICADA: Buscar listings com filtros opcionais (Consulta 1)
+  // Substitui: getListings(), searchListings() e getListingsByBounds()
+  searchListings: async (params?: {
+    // Filtros de área (bounds) - para lazy loading
+    north?: number | null;
+    south?: number | null;
+    east?: number | null;
+    west?: number | null;
+    zoom?: number | null;
 
-  // Buscar listings com filtros (Consulta 9)
-  searchListings: async (filters: {
+    // Filtros de busca avançada
     minPrice?: number | null;
     maxPrice?: number | null;
     neighborhoods?: string[];
@@ -227,40 +229,103 @@ export const api = {
     superhostOnly?: boolean;
   }): Promise<Listing[]> => {
     // Simular delay de rede (requisição ao backend)
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    const delay = params?.north !== undefined ? 200 : 400; // Menor delay para bounds
+    await new Promise((resolve) => setTimeout(resolve, delay));
 
     // TODO: Quando o backend estiver ativo, substituir por:
-    // const params = new URLSearchParams();
-    // if (filters.minPrice) params.append('min_price', filters.minPrice.toString());
-    // ... etc ...
-    // const response = await fetch(`http://localhost:8000/api/listings/search?${params}`);
+    // const queryParams = new URLSearchParams();
+    // if (params?.minPrice) queryParams.append('min_price', params.minPrice.toString());
+    // if (params?.maxPrice) queryParams.append('max_price', params.maxPrice.toString());
+    // if (params?.north) queryParams.append('north', params.north.toString());
+    // if (params?.south) queryParams.append('south', params.south.toString());
+    // if (params?.east) queryParams.append('east', params.east.toString());
+    // if (params?.west) queryParams.append('west', params.west.toString());
+    // if (params?.zoom) queryParams.append('zoom', params.zoom.toString());
+    // if (params?.minRating) queryParams.append('min_rating', params.minRating.toString());
+    // if (params?.minCapacity) queryParams.append('min_capacity', params.minCapacity.toString());
+    // if (params?.minReviews) queryParams.append('min_reviews', params.minReviews.toString());
+    // if (params?.superhostOnly) queryParams.append('superhost_only', params.superhostOnly.toString());
+    // if (params?.neighborhoods?.length) {
+    //   params.neighborhoods.forEach(n => queryParams.append('neighborhood', n));
+    // }
+    // const response = await fetch(`http://localhost:8000/api/listings/search?${queryParams}`);
     // return await response.json();
 
     // Mock: aplicar filtros localmente (simula resposta do backend)
-    return mockListings.filter((listing) => {
-      if (filters.minPrice && listing.price < filters.minPrice) return false;
-      if (filters.maxPrice && listing.price > filters.maxPrice) return false;
+    let results = mockListings;
+
+    // Filtrar por bounds (se fornecidos)
+    if (
+      params?.north !== undefined &&
+      params?.south !== undefined &&
+      params?.east !== undefined &&
+      params?.west !== undefined
+    ) {
+      results = results.filter((listing) => {
+        const lat = listing.property.latitude;
+        const lng = listing.property.longitude;
+        return (
+          lat <= params.north! &&
+          lat >= params.south! &&
+          lng <= params.east! &&
+          lng >= params.west!
+        );
+      });
+    }
+
+    // Aplicar filtros de busca
+    results = results.filter((listing) => {
+      if (params?.minPrice && listing.price < params.minPrice) return false;
+      if (params?.maxPrice && listing.price > params.maxPrice) return false;
       if (
-        filters.neighborhoods &&
-        filters.neighborhoods.length > 0 &&
-        !filters.neighborhoods.includes(listing.property.neighborhood)
+        params?.neighborhoods &&
+        params.neighborhoods.length > 0 &&
+        !params.neighborhoods.includes(listing.property.neighborhood)
       )
         return false;
-      if (filters.minRating && listing.rating < filters.minRating) return false;
-      if (
-        filters.minCapacity &&
-        listing.property.capacity < filters.minCapacity
-      )
+      if (params?.minRating && listing.rating < params.minRating) return false;
+      if (params?.minCapacity && listing.property.capacity < params.minCapacity)
         return false;
-      if (filters.minReviews && listing.numberOfReviews < filters.minReviews)
+      if (params?.minReviews && listing.numberOfReviews < params.minReviews)
         return false;
-      if (filters.superhostOnly && !listing.host.isSuperhost) return false;
+      if (params?.superhostOnly && !listing.host.isSuperhost) return false;
 
       return true;
     });
+
+    // Simplificação por zoom (se fornecido)
+    if (params?.zoom !== undefined && params.zoom !== null) {
+      if (params.zoom < 12) {
+        // Zoom < 12: Mostrar apenas 20% dos pontos (melhor avaliados)
+        results = results
+          .sort(
+            (a, b) =>
+              b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
+          )
+          .slice(0, Math.ceil(results.length * 0.2));
+      } else if (params.zoom < 14) {
+        // Zoom 12-14: Mostrar 50% dos pontos
+        results = results
+          .sort((a, b) => b.rating - a.rating)
+          .slice(0, Math.ceil(results.length * 0.5));
+      }
+      // Zoom >= 14: Mostrar todos
+    }
+
+    // Ordenar por relevância (rating e reviews)
+    results.sort(
+      (a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
+    );
+
+    return results;
   },
 
-  // Buscar listings por área visível do mapa (otimização para grandes volumes)
+  // Alias para manter compatibilidade (sem filtros = listar todas)
+  getListings: async (): Promise<Listing[]> => {
+    return api.searchListings();
+  },
+
+  // Alias para manter compatibilidade (com bounds)
   getListingsByBounds: async (params: {
     north: number;
     south: number;
@@ -277,64 +342,14 @@ export const api = {
       superhostOnly?: boolean;
     };
   }): Promise<Listing[]> => {
-    // Simular delay de rede menor (otimizado para queries frequentes)
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const response = await fetch(
-    //   `http://localhost:8000/api/listings/by-bounds?` +
-    //   `north=${params.north}&south=${params.south}&east=${params.east}&west=${params.west}&zoom=${params.zoom}`
-    // );
-    // return await response.json();
-
-    // Mock: filtrar por bounds e aplicar simplificação por zoom
-    let results = mockListings.filter((listing) => {
-      const lat = listing.property.latitude;
-      const lng = listing.property.longitude;
-      return (
-        lat <= params.north &&
-        lat >= params.south &&
-        lng <= params.east &&
-        lng >= params.west
-      );
+    return api.searchListings({
+      north: params.north,
+      south: params.south,
+      east: params.east,
+      west: params.west,
+      zoom: params.zoom,
+      ...params.filters,
     });
-
-    // Simplificação por zoom (menos pontos em zoom distante)
-    // Zoom < 12: Mostrar apenas 20% dos pontos (melhor avaliados)
-    // Zoom 12-14: Mostrar 50% dos pontos
-    // Zoom >= 14: Mostrar todos
-    if (params.zoom < 12) {
-      results = results
-        .sort((a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews)
-        .slice(0, Math.ceil(results.length * 0.2));
-    } else if (params.zoom < 14) {
-      results = results
-        .sort((a, b) => b.rating - a.rating)
-        .slice(0, Math.ceil(results.length * 0.5));
-    }
-
-    // Aplicar filtros adicionais se fornecidos
-    if (params.filters) {
-      results = results.filter((listing) => {
-        const f = params.filters!;
-        if (f.minPrice && listing.price < f.minPrice) return false;
-        if (f.maxPrice && listing.price > f.maxPrice) return false;
-        if (
-          f.neighborhoods &&
-          f.neighborhoods.length > 0 &&
-          !f.neighborhoods.includes(listing.property.neighborhood)
-        )
-          return false;
-        if (f.minRating && listing.rating < f.minRating) return false;
-        if (f.minCapacity && listing.property.capacity < f.minCapacity)
-          return false;
-        if (f.minReviews && listing.numberOfReviews < f.minReviews) return false;
-        if (f.superhostOnly && !listing.host.isSuperhost) return false;
-        return true;
-      });
-    }
-
-    return results;
   },
 
   // Obter listing por ID
