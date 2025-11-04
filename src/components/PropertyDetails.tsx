@@ -20,6 +20,7 @@ import {
   Award,
 } from "lucide-react";
 import type { Listing } from "@/types";
+import AvailabilityCalendar from "./AvailabilityCalendar";
 
 interface PropertyDetailsProps {
   listing: Listing | null;
@@ -207,6 +208,9 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Availability Calendar */}
+        <AvailabilityCalendar propertyId={property.id} />
 
         {/* Link */}
         <a

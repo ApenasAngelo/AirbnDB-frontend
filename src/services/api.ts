@@ -425,6 +425,45 @@ export const api = {
       intensity: listing.price / maxPrice, // Normalizar preço entre 0 e 1
     }));
   },
+
+  // CONSULTA 7: Verificar disponibilidade de propriedade
+  getPropertyAvailability: async (
+    _propertyId: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<string[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const queryParams = new URLSearchParams();
+    // if (startDate) queryParams.append('start_date', startDate);
+    // if (endDate) queryParams.append('end_date', endDate);
+    // const response = await fetch(`http://localhost:8000/properties/${propertyId}/availability?${queryParams}`);
+    // return await response.json();
+
+    // Mock: gerar datas disponíveis aleatoriamente para 2025
+    const availableDates: string[] = [];
+    const year = 2025;
+
+    // Se não houver range especificado, retornar o ano inteiro
+    const start = startDate ? new Date(startDate) : new Date(2025, 0, 1);
+    const end = endDate ? new Date(endDate) : new Date(2025, 11, 31);
+
+    // Gerar disponibilidade aleatória (aproximadamente 60% dos dias disponíveis)
+    for (
+      let date = new Date(start);
+      date <= end;
+      date.setDate(date.getDate() + 1)
+    ) {
+      if (date.getFullYear() === year && Math.random() > 0.4) {
+        // 60% de chance de estar disponível
+        const dateStr = date.toISOString().split("T")[0];
+        availableDates.push(dateStr);
+      }
+    }
+
+    return availableDates;
+  },
 };
 
 export default api;
