@@ -4,6 +4,7 @@ import type {
   Host,
   NeighborhoodStats,
   HeatmapPoint,
+  Review,
 } from "../types";
 
 // Bairros do Rio de Janeiro com coordenadas aproximadas
@@ -463,6 +464,86 @@ export const api = {
     }
 
     return availableDates;
+  },
+
+  // CONSULTA 8: Obter avaliações de uma propriedade (paginado)
+  getPropertyReviews: async (
+    propertyId: string,
+    offset: number = 0,
+    minYear?: number
+  ): Promise<Review[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const queryParams = new URLSearchParams();
+    // queryParams.append('offset', offset.toString());
+    // if (minYear) queryParams.append('min_year', minYear.toString());
+    // const response = await fetch(`http://localhost:8000/properties/${propertyId}/reviews?${queryParams}`);
+    // return await response.json();
+
+    // Mock: gerar reviews aleatórias
+    const userNames = [
+      "Ana Silva",
+      "Carlos Santos",
+      "Maria Oliveira",
+      "João Pedro",
+      "Juliana Costa",
+      "Rafael Lima",
+      "Beatriz Almeida",
+      "Lucas Ferreira",
+      "Camila Rodrigues",
+      "Fernando Souza",
+      "Patricia Nascimento",
+      "Gustavo Carvalho",
+      "Mariana Gomes",
+      "Ricardo Araujo",
+      "Isabela Martins",
+    ];
+
+    const comments = [
+      "Lugar maravilhoso! A localização é perfeita e o apartamento é exatamente como nas fotos. O anfitrião foi muito atencioso.",
+      "Experiência incrível! A vista é de tirar o fôlego e a acomodação tem tudo que você precisa. Recomendo muito!",
+      "Ótima estadia! O local é limpo, confortável e bem localizado. Voltarei com certeza.",
+      "Adorei a experiência. O apartamento é lindo e o bairro é muito agradável. Perfeito para quem quer conhecer a cidade.",
+      "Superou as expectativas! Tudo impecável, desde a limpeza até os detalhes da decoração. Parabéns ao anfitrião!",
+      "Lugar aconchegante e bem equipado. A comunicação com o anfitrião foi excelente. Recomendo!",
+      "Excelente custo-benefício. O apartamento é confortável e fica perto de tudo. Adoramos!",
+      "Muito bom! O espaço é amplo e bem iluminado. Perfeito para uma estadia relaxante.",
+      "Adoramos tudo! A acomodação é linda e o anfitrião deixou dicas ótimas sobre a região.",
+      "Lugar incrível! Ficamos muito satisfeitos com a limpeza e o conforto. Voltaremos em breve.",
+      "Experiência maravilhosa! O apartamento tem uma localização privilegiada e é muito acolhedor.",
+      "Tudo perfeito! Desde o check-in até o check-out, tudo transcorreu sem problemas.",
+      "Recomendo fortemente! O lugar é lindo, bem decorado e tem tudo que você precisa.",
+      "Estadia incrível! O anfitrião foi super prestativo e a acomodação é de primeira.",
+      "Lugar encantador! A vista é espetacular e o apartamento é muito confortável.",
+    ];
+
+    // Gerar 10 reviews mockadas a partir do offset
+    const reviews: Review[] = [];
+    const totalReviews = 45; // Total mockado de reviews
+
+    for (let i = 0; i < 10 && offset + i < totalReviews; i++) {
+      const reviewIndex = offset + i;
+      const daysAgo = reviewIndex * 7; // Uma review a cada 7 dias
+      const reviewDate = new Date();
+      reviewDate.setDate(reviewDate.getDate() - daysAgo);
+
+      // Filtrar por ano se especificado
+      if (minYear && reviewDate.getFullYear() < minYear) {
+        continue;
+      }
+
+      reviews.push({
+        id: `review-${propertyId}-${reviewIndex}`,
+        propertyId,
+        userId: `user-${(reviewIndex % 15) + 1}`,
+        userName: userNames[reviewIndex % userNames.length],
+        comment: comments[reviewIndex % comments.length],
+        date: reviewDate.toISOString(),
+      });
+    }
+
+    return reviews;
   },
 };
 

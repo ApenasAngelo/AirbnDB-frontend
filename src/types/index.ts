@@ -44,9 +44,9 @@ export interface Calendar {
 
 export interface Review {
   id: string;
-  listingId: string;
+  propertyId: string;
   userId: string;
-  rating: number;
+  userName: string;
   comment: string;
   date: string;
 }

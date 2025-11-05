@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { Listing } from "@/types";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import PropertyReviews from "./PropertyReviews";
 
 interface PropertyDetailsProps {
   listing: Listing | null;
@@ -211,6 +212,14 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
 
         {/* Availability Calendar */}
         <AvailabilityCalendar propertyId={property.id} />
+
+        {/* Reviews Section */}
+        {numberOfReviews > 0 && (
+          <PropertyReviews
+            propertyId={property.id}
+            totalReviews={numberOfReviews}
+          />
+        )}
 
         {/* Link */}
         <a
