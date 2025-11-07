@@ -13,15 +13,21 @@ import PropertyDetails from "@/components/PropertyDetails";
 import PropertyList from "@/components/PropertyList";
 import SearchFilters from "@/components/SearchFilters";
 import Statistics from "@/components/Statistics";
+import HostProfile from "@/components/HostProfile";
 import api from "@/services/api";
 import type { Listing, HeatmapMode, HeatmapPoint } from "@/types";
 import type { SearchFiltersState } from "@/types/filters";
+
+type ViewMode = "search" | "property" | "hostProfile";
 
 export default function MapPage() {
   const navigate = useNavigate();
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [selectedHostId, setSelectedHostId] = useState<string | null>(null);
+  const [previousListing, setPreviousListing] = useState<Listing | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("search");
   const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>("none");
@@ -143,10 +149,42 @@ export default function MapPage() {
 
   const handleListingSelect = (listing: Listing | null) => {
     setSelectedListing(listing);
+    if (listing) {
+      setViewMode("property");
+    } else {
+      setViewMode("search");
+    }
   };
 
   const handleDeselectListing = () => {
     setSelectedListing(null);
+    setViewMode("search");
+  };
+
+  const handleHostClick = (hostId: string) => {
+    setPreviousListing(selectedListing);
+    setSelectedHostId(hostId);
+    setViewMode("hostProfile");
+  };
+
+  const handleHostProfileBack = () => {
+    setSelectedHostId(null);
+    if (previousListing) {
+      setSelectedListing(previousListing);
+      setViewMode("property");
+      setPreviousListing(null);
+    } else {
+      setViewMode("search");
+    }
+  };
+
+  const handleHostPropertySelect = (listing: Listing) => {
+    // Quando seleciona propriedade do host, abre a propriedade
+    // mas quando voltar, deve ir direto para search (não para o perfil do host)
+    setSelectedListing(listing);
+    setViewMode("property");
+    // Limpa o host selecionado para que o "Voltar" vá para search
+    setSelectedHostId(null);
   };
 
   if (loading) {
@@ -208,22 +246,21 @@ export default function MapPage() {
                   className="flex-1 mt-0 overflow-hidden flex flex-col"
                 >
                   {/* Botão Voltar quando propriedade selecionada */}
-                  {selectedListing && (
+                  {viewMode === "property" && (
                     <div className="px-4 pt-4 pb-2">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={handleDeselectListing}
-                        className="w-full justify-start gap-2 hover:bg-gray-100"
                       >
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowLeft className="h-4 w-4 mr-2" />
                         Voltar para resultados
                       </Button>
                     </div>
                   )}
 
-                  {/* Filtros e Lista de Propriedades */}
-                  {!selectedListing ? (
+                  {/* Vista de Busca */}
+                  {viewMode === "search" && (
                     <div className="flex-1 overflow-hidden flex flex-col">
                       <SearchFilters
                         filters={filters}
@@ -239,9 +276,26 @@ export default function MapPage() {
                         />
                       </div>
                     </div>
-                  ) : (
+                  )}
+
+                  {/* Vista de Detalhes da Propriedade */}
+                  {viewMode === "property" && selectedListing && (
                     <div className="flex-1 overflow-hidden">
-                      <PropertyDetails listing={selectedListing} />
+                      <PropertyDetails
+                        listing={selectedListing}
+                        onHostClick={handleHostClick}
+                      />
+                    </div>
+                  )}
+
+                  {/* Vista de Perfil do Host */}
+                  {viewMode === "hostProfile" && selectedHostId && (
+                    <div className="flex-1 overflow-hidden">
+                      <HostProfile
+                        hostId={selectedHostId}
+                        onBack={handleHostProfileBack}
+                        onPropertySelect={handleHostPropertySelect}
+                      />
                     </div>
                   )}
                 </TabsContent>

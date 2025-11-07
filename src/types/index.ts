@@ -6,6 +6,15 @@ export interface Host {
   isSuperhost: boolean;
   verified: boolean;
   joinDate: string;
+  url?: string;
+  description?: string;
+  location?: string;
+}
+
+export interface HostProfile extends Host {
+  totalProperties: number;
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface Property {

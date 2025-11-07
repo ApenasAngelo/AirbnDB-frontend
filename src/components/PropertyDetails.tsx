@@ -25,9 +25,13 @@ import PropertyReviews from "./PropertyReviews";
 
 interface PropertyDetailsProps {
   listing: Listing | null;
+  onHostClick?: (hostId: string) => void;
 }
 
-export default function PropertyDetails({ listing }: PropertyDetailsProps) {
+export default function PropertyDetails({
+  listing,
+  onHostClick,
+}: PropertyDetailsProps) {
   if (!listing) {
     return (
       <div className="h-full flex items-center justify-center p-6">
@@ -102,7 +106,12 @@ export default function PropertyDetails({ listing }: PropertyDetailsProps) {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-900">{host.name}</span>
+              <button
+                onClick={() => onHostClick?.(host.id)}
+                className="font-semibold text-gray-900 hover:text-rose-600 transition-colors cursor-pointer"
+              >
+                {host.name}
+              </button>
               <div className="flex gap-2">
                 {host.isSuperhost && (
                   <Badge

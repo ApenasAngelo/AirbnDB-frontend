@@ -2,6 +2,7 @@ import type {
   Listing,
   Property,
   Host,
+  HostProfile,
   NeighborhoodStats,
   HeatmapPoint,
   Review,
@@ -544,6 +545,69 @@ export const api = {
     }
 
     return reviews;
+  },
+
+  // CONSULTA 10: Obter perfil do anfitrião e suas propriedades (paginado)
+  getHostProfile: async (hostId: string): Promise<HostProfile> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const response = await fetch(`http://localhost:8000/hosts/${hostId}/profile`);
+    // return await response.json();
+
+    // Mock: encontrar host e calcular estatísticas
+    const hostListings = mockListings.filter((l) => l.hostId === hostId);
+    const host = hostListings[0]?.host;
+
+    if (!host) {
+      throw new Error("Host not found");
+    }
+
+    const totalProperties = hostListings.length;
+    const totalReviews = hostListings.reduce(
+      (sum, l) => sum + l.numberOfReviews,
+      0
+    );
+
+    // Calcular média ponderada: (nota × qtd_reviews) / total_reviews
+    const weightedSum = hostListings.reduce(
+      (sum, l) => sum + l.rating * l.numberOfReviews,
+      0
+    );
+    const averageRating = totalReviews > 0 ? weightedSum / totalReviews : 0;
+
+    return {
+      ...host,
+      description:
+        "Anfitrião experiente com anos hospedando viajantes de todo o mundo. Adora compartilhar dicas locais e garantir que seus hóspedes tenham a melhor experiência possível no Rio de Janeiro.",
+      location: "Rio de Janeiro, Brasil",
+      url: `https://airbnb.com/users/show/${hostId}`,
+      totalProperties,
+      averageRating: Number(averageRating.toFixed(2)),
+      totalReviews,
+    };
+  },
+
+  getHostProperties: async (
+    hostId: string,
+    offset: number = 0
+  ): Promise<Listing[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const queryParams = new URLSearchParams();
+    // queryParams.append('offset', offset.toString());
+    // const response = await fetch(`http://localhost:8000/hosts/${hostId}/properties?${queryParams}`);
+    // return await response.json();
+
+    // Mock: filtrar propriedades do host e paginar
+    const hostListings = mockListings
+      .filter((l) => l.hostId === hostId)
+      .sort(
+        (a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
+      );
+
+    return hostListings.slice(offset, offset + 5);
   },
 };
 
