@@ -21,6 +21,7 @@ import {
   MessageSquare,
   ArrowLeft,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { api } from "@/services/api";
 import type { HostProfile as HostProfileType, Listing } from "@/types";
@@ -177,6 +178,19 @@ export default function HostProfile({
             </CardContent>
           )}
         </Card>
+
+        {/* Link to Airbnb Profile */}
+        {profile.url && (
+          <a
+            href={profile.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white rounded-lg font-semibold transition-colors"
+          >
+            Ver perfil no Airbnb
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,8 +19,10 @@ import {
   CheckCircle2,
   ExternalLink,
   Award,
+  Loader2,
 } from "lucide-react";
 import type { Listing } from "@/types";
+import api from "@/services/api";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import PropertyReviews from "./PropertyReviews";
 
@@ -32,6 +35,33 @@ export default function PropertyDetails({
   listing,
   onHostClick,
 }: PropertyDetailsProps) {
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [loadingAmenities, setLoadingAmenities] = useState(false);
+
+  // Carregar amenidades quando a propriedade mudar
+  useEffect(() => {
+    if (!listing) {
+      setAmenities([]);
+      return;
+    }
+
+    const fetchAmenities = async () => {
+      setLoadingAmenities(true);
+      try {
+        const data = await api.getPropertyAmenities(listing.propertyId);
+        setAmenities(data);
+      } catch (error) {
+        console.error("Erro ao carregar amenidades:", error);
+        // Fallback para amenidades da propriedade se a API falhar
+        setAmenities(listing.property.amenities);
+      } finally {
+        setLoadingAmenities(false);
+      }
+    };
+
+    fetchAmenities();
+  }, [listing?.propertyId]);
+
   if (!listing) {
     return (
       <div className="h-full flex items-center justify-center p-6">
@@ -209,13 +239,28 @@ export default function PropertyDetails({
             <CardTitle className="text-lg">Comodidades</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {property.amenities.map((amenity, index) => (
-                <Badge key={index} variant="outline" className="text-sm">
-                  {amenity}
-                </Badge>
-              ))}
-            </div>
+            {loadingAmenities ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="h-6 w-6 animate-spin text-rose-500" />
+                  <p className="text-sm text-gray-500">
+                    Carregando comodidades...
+                  </p>
+                </div>
+              </div>
+            ) : amenities.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {amenities.map((amenity, index) => (
+                  <Badge key={index} variant="outline" className="text-sm">
+                    {amenity}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Nenhuma comodidade informada
+              </p>
+            )}
           </CardContent>
         </Card>
 

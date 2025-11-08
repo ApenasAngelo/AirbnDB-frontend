@@ -242,7 +242,13 @@ export default function Statistics() {
                     <th className="px-4 py-3">Bairro</th>
                     <th className="px-4 py-3 text-right">Acomodações</th>
                     <th className="px-4 py-3 text-right">Preço Médio</th>
-                    <th className="px-4 py-3 text-right">Avaliação Média</th>
+                    <th className="px-4 py-3 text-right">Avaliação</th>
+                    <th className="px-4 py-3 text-right">Capacidade</th>
+                    <th className="px-4 py-3 text-right">Quartos</th>
+                    <th className="px-4 py-3 text-right">Banheiros</th>
+                    <th className="px-4 py-3 text-right">Reviews</th>
+                    <th className="px-4 py-3 text-right">Superhosts</th>
+                    <th className="px-4 py-3 text-right">Verificados</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -267,6 +273,28 @@ export default function Statistics() {
                           ) : (
                             <span className="text-gray-400">N/A</span>
                           )}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {stat.averageCapacity}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {stat.averageBedrooms}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {stat.averageBathrooms}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {stat.averageReviews}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="text-rose-600 font-medium">
+                          {stat.superhostCount}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="text-blue-600 font-medium">
+                          {stat.verifiedCount}
                         </span>
                       </td>
                     </tr>

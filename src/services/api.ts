@@ -360,17 +360,40 @@ export const api = {
     return mockListings.find((listing) => listing.id === id) || null;
   },
 
-  // Obter estatísticas por bairro
+  // CONSULTA 2: Obter amenidades de uma propriedade específica
+  getPropertyAmenities: async (propertyId: string): Promise<string[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/amenities`);
+    // return await response.json();
+
+    // Mock: buscar amenidades da propriedade
+    const listing = mockListings.find((l) => l.propertyId === propertyId);
+    return listing?.property.amenities || [];
+  },
+
+  // Obter estatísticas por bairros agregadas por bairro
   getNeighborhoodStats: async (): Promise<NeighborhoodStats[]> => {
     await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // TODO: Quando o backend estiver ativo, substituir por:
+    // const response = await fetch('http://localhost:8000/api/neighborhoods/stats');
+    // return await response.json();
 
     const statsByNeighborhood = new Map<
       string,
       {
         totalPrice: number;
         totalRating: number;
+        totalCapacity: number;
+        totalBedrooms: number;
+        totalBathrooms: number;
+        totalReviews: number;
         count: number;
         ratedCount: number;
+        superhostCount: number;
+        verifiedCount: number;
       }
     >();
 
@@ -379,16 +402,34 @@ export const api = {
       const current = statsByNeighborhood.get(neighborhood) || {
         totalPrice: 0,
         totalRating: 0,
+        totalCapacity: 0,
+        totalBedrooms: 0,
+        totalBathrooms: 0,
+        totalReviews: 0,
         count: 0,
         ratedCount: 0,
+        superhostCount: 0,
+        verifiedCount: 0,
       };
 
       current.totalPrice += listing.price;
+      current.totalCapacity += listing.property.capacity;
+      current.totalBedrooms += listing.property.bedrooms;
+      current.totalBathrooms += listing.property.bathrooms;
+      current.totalReviews += listing.numberOfReviews;
       current.count += 1;
 
       if (listing.rating > 0) {
         current.totalRating += listing.rating;
         current.ratedCount += 1;
+      }
+
+      if (listing.host.isSuperhost) {
+        current.superhostCount += 1;
+      }
+
+      if (listing.host.verified) {
+        current.verifiedCount += 1;
       }
 
       statsByNeighborhood.set(neighborhood, current);
@@ -397,12 +438,20 @@ export const api = {
     return Array.from(statsByNeighborhood.entries())
       .map(([neighborhood, stats]) => ({
         neighborhood,
+        totalListings: stats.count,
         averagePrice: Math.round(stats.totalPrice / stats.count),
         averageRating:
           stats.ratedCount > 0
             ? Number((stats.totalRating / stats.ratedCount).toFixed(2))
             : 0,
-        totalListings: stats.count,
+        averageCapacity: Number((stats.totalCapacity / stats.count).toFixed(1)),
+        averageBedrooms: Number((stats.totalBedrooms / stats.count).toFixed(1)),
+        averageBathrooms: Number(
+          (stats.totalBathrooms / stats.count).toFixed(1)
+        ),
+        averageReviews: Number((stats.totalReviews / stats.count).toFixed(0)),
+        superhostCount: stats.superhostCount,
+        verifiedCount: stats.verifiedCount,
       }))
       .sort((a, b) => b.totalListings - a.totalListings);
   },
@@ -429,27 +478,18 @@ export const api = {
   },
 
   // CONSULTA 7: Verificar disponibilidade de propriedade
-  getPropertyAvailability: async (
-    _propertyId: string,
-    startDate?: string,
-    endDate?: string
-  ): Promise<string[]> => {
+  getPropertyAvailability: async (_propertyId: string): Promise<string[]> => {
     await new Promise((resolve) => setTimeout(resolve, 400));
 
     // TODO: Quando o backend estiver ativo, substituir por:
-    // const queryParams = new URLSearchParams();
-    // if (startDate) queryParams.append('start_date', startDate);
-    // if (endDate) queryParams.append('end_date', endDate);
-    // const response = await fetch(`http://localhost:8000/properties/${propertyId}/availability?${queryParams}`);
+    // const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/availability`);
     // return await response.json();
 
     // Mock: gerar datas disponíveis aleatoriamente para 2025
     const availableDates: string[] = [];
     const year = 2025;
-
-    // Se não houver range especificado, retornar o ano inteiro
-    const start = startDate ? new Date(startDate) : new Date(2025, 0, 1);
-    const end = endDate ? new Date(endDate) : new Date(2025, 11, 31);
+    const start = new Date(2025, 0, 1);
+    const end = new Date(2025, 11, 31);
 
     // Gerar disponibilidade aleatória (aproximadamente 60% dos dias disponíveis)
     for (

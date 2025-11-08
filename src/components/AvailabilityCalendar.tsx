@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CalendarDays, Loader2 } from "lucide-react";
-import { api } from "@/services/api";
+import api from "@/services/api";
 
 interface AvailabilityCalendarProps {
   propertyId: string;

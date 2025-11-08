@@ -63,9 +63,15 @@ export interface Review {
 // Tipos auxiliares para estatísticas
 export interface NeighborhoodStats {
   neighborhood: string;
+  totalListings: number;
   averagePrice: number;
   averageRating: number;
-  totalListings: number;
+  averageCapacity: number;
+  averageBedrooms: number;
+  averageBathrooms: number;
+  averageReviews: number;
+  superhostCount: number;
+  verifiedCount: number;
 }
 
 export interface HeatmapPoint {
