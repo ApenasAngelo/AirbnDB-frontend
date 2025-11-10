@@ -42,6 +42,7 @@ export interface Listing {
   numberOfReviews: number;
   property: Property;
   host: Host;
+  rankingAmongHostProperties?: number; // Ranking da propriedade entre as do anfitrião
 }
 
 export interface Calendar {
@@ -58,6 +59,7 @@ export interface Review {
   userName: string;
   comment: string;
   date: string;
+  userTotalReviews?: number; // Total de avaliações feitas pelo usuário
 }
 
 // Tipos auxiliares para estatísticas
@@ -72,6 +74,18 @@ export interface NeighborhoodStats {
   averageReviews: number;
   superhostCount: number;
   verifiedCount: number;
+}
+
+export interface OverviewStats {
+  totalProperties: number;
+  totalHosts: number;
+  totalNeighborhoods: number;
+  totalUsers: number;
+  overallAvgPrice: number;
+  overallAvgRating: number;
+  totalSuperhosts: number;
+  totalVerifiedHosts: number;
+  totalReviews: number;
 }
 
 export interface HeatmapPoint {

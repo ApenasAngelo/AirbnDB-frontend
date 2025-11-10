@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { MessageSquare, User, Calendar, Loader2, X } from "lucide-react";
+import { MessageSquare, User, Calendar, Loader2, X, Award } from "lucide-react";
 import { api } from "@/services/api";
 import type { Review } from "@/types";
 
@@ -111,9 +111,18 @@ export default function PropertyReviews({
                   <User className="h-5 w-5 text-rose-600" />
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">
-                    {latestReview.userName}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-gray-900">
+                      {latestReview.userName}
+                    </p>
+                    {latestReview.userTotalReviews &&
+                      latestReview.userTotalReviews > 5 && (
+                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                          <Award className="h-3 w-3" />
+                          {latestReview.userTotalReviews} avaliações
+                        </span>
+                      )}
+                  </div>
                   <div className="flex items-center gap-1 text-xs text-gray-500">
                     <Calendar className="h-3 w-3" />
                     {formatDate(latestReview.date)}
@@ -248,9 +257,18 @@ function AllReviewsModal({
                         <User className="h-6 w-6 text-rose-600" />
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">
-                          {review.userName}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-gray-900">
+                            {review.userName}
+                          </p>
+                          {review.userTotalReviews &&
+                            review.userTotalReviews > 5 && (
+                              <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                                <Award className="h-3 w-3" />
+                                {review.userTotalReviews} avaliações
+                              </span>
+                            )}
+                        </div>
                         <div className="flex items-center gap-1 text-sm text-gray-500">
                           <Calendar className="h-3.5 w-3.5" />
                           {formatDate(review.date)}

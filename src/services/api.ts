@@ -507,7 +507,8 @@ export const api = {
     return availableDates;
   },
 
-  // CONSULTA 8: Obter avaliações de uma propriedade (paginado)
+  // CONSULTA 7: Obter avaliações de uma propriedade (paginado)
+  // MODIFICAÇÃO: Adicionado campo userTotalReviews (subconsulta)
   getPropertyReviews: async (
     propertyId: string,
     offset: number = 0,
@@ -574,13 +575,18 @@ export const api = {
         continue;
       }
 
+      const userId = `user-${(reviewIndex % 15) + 1}`;
+      // Simular contagem de reviews do usuário (entre 1 e 20)
+      const userTotalReviews = Math.floor(Math.random() * 20) + 1;
+
       reviews.push({
         id: `review-${propertyId}-${reviewIndex}`,
         propertyId,
-        userId: `user-${(reviewIndex % 15) + 1}`,
+        userId,
         userName: userNames[reviewIndex % userNames.length],
         comment: comments[reviewIndex % comments.length],
         date: reviewDate.toISOString(),
+        userTotalReviews, // Novo campo (subconsulta)
       });
     }
 
@@ -628,6 +634,8 @@ export const api = {
     };
   },
 
+  // CONSULTA 9 (parte 2): Obter propriedades do anfitrião (paginado)
+  // MODIFICAÇÃO: Adicionado campo rankingAmongHostProperties (subconsulta)
   getHostProperties: async (
     hostId: string,
     offset: number = 0
@@ -647,7 +655,13 @@ export const api = {
         (a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
       );
 
-    return hostListings.slice(offset, offset + 5);
+    // Calcular ranking de cada propriedade (subconsulta simulada)
+    const listingsWithRanking = hostListings.map((listing, index) => ({
+      ...listing,
+      rankingAmongHostProperties: index + 1, // Ranking baseado na ordenação
+    }));
+
+    return listingsWithRanking.slice(offset, offset + 5);
   },
 };
 

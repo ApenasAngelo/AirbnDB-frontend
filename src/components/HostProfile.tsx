@@ -22,6 +22,7 @@ import {
   ArrowLeft,
   Loader2,
   ExternalLink,
+  Medal,
 } from "lucide-react";
 import { api } from "@/services/api";
 import type { HostProfile as HostProfileType, Listing } from "@/types";
@@ -257,13 +258,24 @@ export default function HostProfile({
                   onClick={() => onPropertySelect(listing)}
                 >
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base">
-                      {listing.property.name}
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {listing.property.neighborhood}
-                    </CardDescription>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          {listing.property.name}
+                          {listing.rankingAmongHostProperties &&
+                            listing.rankingAmongHostProperties <= 3 && (
+                              <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full font-normal">
+                                <Medal className="h-3 w-3" />#
+                                {listing.rankingAmongHostProperties}
+                              </span>
+                            )}
+                        </CardTitle>
+                        <CardDescription className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {listing.property.neighborhood}
+                        </CardDescription>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center justify-between">
