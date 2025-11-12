@@ -229,6 +229,11 @@ export const api = {
     minCapacity?: number | null;
     minReviews?: number | null;
     superhostOnly?: boolean;
+
+    // Filtros de disponibilidade (Consulta 1 modificada)
+    checkInDate?: string | null;
+    checkOutDate?: string | null;
+    minAvailableDays?: number | null;
   }): Promise<Listing[]> => {
     // Simular delay de rede (requisição ao backend)
     const delay = params?.north !== undefined ? 200 : 400; // Menor delay para bounds
@@ -247,6 +252,9 @@ export const api = {
     // if (params?.minCapacity) queryParams.append('min_capacity', params.minCapacity.toString());
     // if (params?.minReviews) queryParams.append('min_reviews', params.minReviews.toString());
     // if (params?.superhostOnly) queryParams.append('superhost_only', params.superhostOnly.toString());
+    // if (params?.checkInDate) queryParams.append('check_in_date', params.checkInDate);
+    // if (params?.checkOutDate) queryParams.append('check_out_date', params.checkOutDate);
+    // if (params?.minAvailableDays) queryParams.append('min_available_days', params.minAvailableDays.toString());
     // if (params?.neighborhoods?.length) {
     //   params.neighborhoods.forEach(n => queryParams.append('neighborhood', n));
     // }
@@ -255,6 +263,35 @@ export const api = {
 
     // Mock: aplicar filtros localmente (simula resposta do backend)
     let results = mockListings;
+
+    // Gerar campos adicionais da Consulta 1 (totalAmenities, availableDaysInPeriod)
+    results = results.map((listing) => {
+      // totalAmenities: usar a contagem real de amenidades da propriedade
+      const totalAmenities = listing.property.amenities.length;
+
+      // availableDaysInPeriod: mock - se datas foram fornecidas, calcular dias disponíveis
+      let availableDaysInPeriod: number | undefined = undefined;
+      if (params?.checkInDate && params?.checkOutDate) {
+        const checkIn = new Date(params.checkInDate);
+        const checkOut = new Date(params.checkOutDate);
+        const totalDays = Math.ceil(
+          (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        // Mock: entre 50% e 100% dos dias estão disponíveis
+        availableDaysInPeriod = Math.floor(
+          totalDays * (0.5 + Math.random() * 0.5)
+        );
+      }
+
+      return {
+        ...listing,
+        property: {
+          ...listing.property,
+          totalAmenities,
+          availableDaysInPeriod,
+        },
+      };
+    });
 
     // Filtrar por bounds (se fornecidos)
     if (
@@ -291,6 +328,25 @@ export const api = {
       if (params?.minReviews && listing.numberOfReviews < params.minReviews)
         return false;
       if (params?.superhostOnly && !listing.host.isSuperhost) return false;
+
+      // Filtro de disponibilidade: se datas foram fornecidas, verificar disponibilidade
+      if (params?.checkInDate && params?.checkOutDate) {
+        // Mock: 70% das propriedades estão disponíveis nas datas solicitadas
+        const hasAvailability = Math.random() > 0.3;
+        if (!hasAvailability) return false;
+
+        // Se minAvailableDays foi especificado, verificar
+        if (
+          params?.minAvailableDays &&
+          listing.property.availableDaysInPeriod
+        ) {
+          if (
+            listing.property.availableDaysInPeriod < params.minAvailableDays
+          ) {
+            return false;
+          }
+        }
+      }
 
       return true;
     });

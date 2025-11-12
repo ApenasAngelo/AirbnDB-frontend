@@ -44,6 +44,9 @@ export default function MapPage() {
     minCapacity: null,
     minReviews: null,
     superhostOnly: false,
+    checkInDate: null,
+    checkOutDate: null,
+    minAvailableDays: null,
   });
   // Estado para lazy loading (desabilitado por padrão para mock data pequeno)
   const [useLazyLoading] = useState(false);
@@ -80,7 +83,9 @@ export default function MapPage() {
         filters.minRating ||
         filters.minCapacity ||
         filters.minReviews ||
-        filters.superhostOnly;
+        filters.superhostOnly ||
+        filters.checkInDate ||
+        filters.checkOutDate;
 
       // Se não há filtros ativos, usar todos os listings
       if (!hasActiveFilters) {
@@ -99,6 +104,9 @@ export default function MapPage() {
           minCapacity: filters.minCapacity,
           minReviews: filters.minReviews,
           superhostOnly: filters.superhostOnly,
+          checkInDate: filters.checkInDate,
+          checkOutDate: filters.checkOutDate,
+          minAvailableDays: filters.minAvailableDays,
         });
         setFilteredListings(results);
       } catch (error) {
