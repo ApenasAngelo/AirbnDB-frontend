@@ -8,211 +8,55 @@ import type {
   Review,
 } from "../types";
 
-// Bairros do Rio de Janeiro com coordenadas aproximadas
-const neighborhoods = [
-  { name: "Copacabana", lat: -22.9711, lng: -43.1822 },
-  { name: "Ipanema", lat: -22.9838, lng: -43.2043 },
-  { name: "Leblon", lat: -22.9844, lng: -43.2253 },
-  { name: "Barra da Tijuca", lat: -23.0045, lng: -43.3647 },
-  { name: "Botafogo", lat: -22.9519, lng: -43.1847 },
-  { name: "Lapa", lat: -22.9138, lng: -43.1803 },
-  { name: "Santa Teresa", lat: -22.9211, lng: -43.1897 },
-  { name: "Flamengo", lat: -22.9324, lng: -43.1755 },
-  { name: "Lagoa", lat: -22.9711, lng: -43.2055 },
-  { name: "Tijuca", lat: -22.9236, lng: -43.2341 },
-  { name: "Centro", lat: -22.9068, lng: -43.1729 },
-  { name: "Recreio", lat: -23.0275, lng: -43.4502 },
-];
+// Configuração da API
+const API_BASE_URL = "http://localhost:8000/api";
 
-const amenitiesList = [
-  "Wi-Fi",
-  "Ar-condicionado",
-  "Cozinha",
-  "TV",
-  "Máquina de lavar",
-  "Estacionamento",
-  "Piscina",
-  "Academia",
-  "Portaria 24h",
-  "Vista para o mar",
-  "Varanda",
-  "Churrasqueira",
-  "Elevador",
-  "Pets permitidos",
-];
+/**
+ * Converte os dados do backend para o formato esperado pelo frontend
+ */
+const transformBackendListing = (backendData: any): Listing => {
+  const property: Property = {
+    id: backendData.property_id.toString(),
+    name: backendData.property_name,
+    description: backendData.property_description || "",
+    type: backendData.property_type as any,
+    capacity: backendData.capacity,
+    bedrooms: backendData.bedrooms,
+    beds: backendData.beds,
+    bathrooms: backendData.bathrooms,
+    amenities: [], // Será carregado separadamente se necessário
+    neighborhood: backendData.neighborhood,
+    latitude: backendData.latitude,
+    longitude: backendData.longitude,
+    totalAmenities: backendData.total_amenities,
+    availableDaysInPeriod: backendData.available_days_in_period,
+  };
 
-const propertyTypes: Array<"apartment" | "house" | "room" | "other"> = [
-  "apartment",
-  "house",
-  "room",
-  "other",
-];
+  const host: Host = {
+    id: backendData.host_id.toString(),
+    name: backendData.host_name,
+    isSuperhost: backendData.is_superhost,
+    verified: backendData.verified,
+    joinDate: backendData.host_join_date,
+  };
 
-const firstNames = [
-  "João",
-  "Maria",
-  "Pedro",
-  "Ana",
-  "Carlos",
-  "Juliana",
-  "Lucas",
-  "Beatriz",
-  "Rafael",
-  "Camila",
-  "Fernando",
-  "Patricia",
-  "Gustavo",
-  "Mariana",
-  "Ricardo",
-];
-
-const lastNames = [
-  "Silva",
-  "Santos",
-  "Oliveira",
-  "Souza",
-  "Costa",
-  "Ferreira",
-  "Rodrigues",
-  "Almeida",
-  "Nascimento",
-  "Lima",
-  "Araujo",
-  "Fernandes",
-  "Carvalho",
-  "Gomes",
-];
-
-// Função auxiliar para gerar número aleatório
-const random = (min: number, max: number) => Math.random() * (max - min) + min;
-
-// Função auxiliar para selecionar item aleatório
-const randomItem = <T>(arr: T[]): T =>
-  arr[Math.floor(Math.random() * arr.length)];
-
-// Função auxiliar para selecionar múltiplos itens aleatórios
-const randomItems = <T>(arr: T[], count: number): T[] => {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
+  return {
+    id: backendData.property_id.toString(),
+    propertyId: backendData.property_id.toString(),
+    hostId: backendData.host_id.toString(),
+    price: backendData.price,
+    url: backendData.listing_url,
+    rating: backendData.rating,
+    numberOfReviews: backendData.number_of_reviews,
+    property,
+    host,
+    rankingAmongHostProperties: backendData.ranking_among_host_properties,
+  };
 };
-
-// Gerar hosts mockados
-const generateMockHosts = (count: number): Host[] => {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `host-${i + 1}`,
-    name: `${randomItem(firstNames)} ${randomItem(lastNames)}`,
-    isSuperhost: Math.random() > 0.7,
-    verified: Math.random() > 0.3,
-    joinDate: new Date(
-      2018 + Math.floor(Math.random() * 6),
-      Math.floor(Math.random() * 12),
-      Math.floor(Math.random() * 28) + 1
-    ).toISOString(),
-  }));
-};
-
-// Gerar propriedades mockadas
-const generateMockProperties = (count: number): Property[] => {
-  return Array.from({ length: count }, (_, i) => {
-    const neighborhood = randomItem(neighborhoods);
-    const type = randomItem(propertyTypes);
-
-    // Adicionar variação nas coordenadas para distribuir as propriedades
-    const latOffset = (Math.random() - 0.5) * 0.02;
-    const lngOffset = (Math.random() - 0.5) * 0.02;
-
-    const bedrooms = type === "room" ? 1 : Math.floor(random(1, 5));
-    const capacity = bedrooms * 2 + Math.floor(random(0, 2));
-
-    return {
-      id: `property-${i + 1}`,
-      name: `${
-        type === "apartment"
-          ? "Apartamento"
-          : type === "house"
-          ? "Casa"
-          : type === "room"
-          ? "Quarto"
-          : "Acomodação"
-      } em ${neighborhood.name}`,
-      description: `Linda ${
-        type === "apartment"
-          ? "apartamento"
-          : type === "house"
-          ? "casa"
-          : type === "room"
-          ? "quarto"
-          : "acomodação"
-      } localizada no coração de ${
-        neighborhood.name
-      }. Perfeita para quem busca conforto e praticidade. Próximo a restaurantes, praias e pontos turísticos.`,
-      type,
-      capacity,
-      bedrooms,
-      beds: bedrooms + Math.floor(random(0, 2)),
-      bathrooms: Math.max(1, Math.floor(bedrooms / 2)),
-      amenities: randomItems(amenitiesList, Math.floor(random(4, 10))),
-      neighborhood: neighborhood.name,
-      latitude: neighborhood.lat + latOffset,
-      longitude: neighborhood.lng + lngOffset,
-    };
-  });
-};
-
-// Gerar listings mockados
-const generateMockListings = (
-  properties: Property[],
-  hosts: Host[]
-): Listing[] => {
-  return properties.map((property, i) => {
-    const host = randomItem(hosts);
-
-    // Preços variam por bairro e tipo
-    let basePrice = 150;
-    if (["Leblon", "Ipanema"].includes(property.neighborhood)) {
-      basePrice = 300;
-    } else if (
-      ["Copacabana", "Barra da Tijuca"].includes(property.neighborhood)
-    ) {
-      basePrice = 250;
-    } else if (
-      ["Botafogo", "Lagoa", "Flamengo"].includes(property.neighborhood)
-    ) {
-      basePrice = 200;
-    }
-
-    if (property.type === "house") {
-      basePrice *= 1.5;
-    } else if (property.type === "room") {
-      basePrice *= 0.5;
-    }
-
-    const price = Math.round(basePrice + random(-50, 100));
-    const numberOfReviews = Math.floor(random(0, 150));
-
-    return {
-      id: `listing-${i + 1}`,
-      propertyId: property.id,
-      hostId: host.id,
-      price,
-      url: `https://airbnb.com/rooms/${property.id}`,
-      rating: numberOfReviews > 0 ? Number(random(3.5, 5.0).toFixed(2)) : 0,
-      numberOfReviews,
-      property,
-      host,
-    };
-  });
-};
-
-// Gerar dados mockados
-const mockHosts = generateMockHosts(30);
-const mockProperties = generateMockProperties(80);
-const mockListings = generateMockListings(mockProperties, mockHosts);
 
 // API Mock Service
 export const api = {
-  // CONSULTA UNIFICADA: Buscar listings com filtros opcionais (Consulta 1)
-  // Substitui: getListings(), searchListings() e getListingsByBounds()
+  // CONSULTA 1 UNIFICADA: Buscar listings com filtros opcionais
   searchListings: async (params?: {
     // Filtros de área (bounds) - para lazy loading
     north?: number | null;
@@ -230,152 +74,81 @@ export const api = {
     minReviews?: number | null;
     superhostOnly?: boolean;
 
-    // Filtros de disponibilidade (Consulta 1 modificada)
+    // Filtros de disponibilidade
     checkInDate?: string | null;
     checkOutDate?: string | null;
     minAvailableDays?: number | null;
   }): Promise<Listing[]> => {
-    // Simular delay de rede (requisição ao backend)
-    const delay = params?.north !== undefined ? 200 : 400; // Menor delay para bounds
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    const queryParams = new URLSearchParams();
 
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const queryParams = new URLSearchParams();
-    // if (params?.minPrice) queryParams.append('min_price', params.minPrice.toString());
-    // if (params?.maxPrice) queryParams.append('max_price', params.maxPrice.toString());
-    // if (params?.north) queryParams.append('north', params.north.toString());
-    // if (params?.south) queryParams.append('south', params.south.toString());
-    // if (params?.east) queryParams.append('east', params.east.toString());
-    // if (params?.west) queryParams.append('west', params.west.toString());
-    // if (params?.zoom) queryParams.append('zoom', params.zoom.toString());
-    // if (params?.minRating) queryParams.append('min_rating', params.minRating.toString());
-    // if (params?.minCapacity) queryParams.append('min_capacity', params.minCapacity.toString());
-    // if (params?.minReviews) queryParams.append('min_reviews', params.minReviews.toString());
-    // if (params?.superhostOnly) queryParams.append('superhost_only', params.superhostOnly.toString());
-    // if (params?.checkInDate) queryParams.append('check_in_date', params.checkInDate);
-    // if (params?.checkOutDate) queryParams.append('check_out_date', params.checkOutDate);
-    // if (params?.minAvailableDays) queryParams.append('min_available_days', params.minAvailableDays.toString());
-    // if (params?.neighborhoods?.length) {
-    //   params.neighborhoods.forEach(n => queryParams.append('neighborhood', n));
-    // }
-    // const response = await fetch(`http://localhost:8000/api/listings/search?${queryParams}`);
-    // return await response.json();
+    // Adicionar parâmetros de bounds
+    if (params?.south !== undefined && params.south !== null)
+      queryParams.append("south", params.south.toString());
+    if (params?.north !== undefined && params.north !== null)
+      queryParams.append("north", params.north.toString());
+    if (params?.west !== undefined && params.west !== null)
+      queryParams.append("west", params.west.toString());
+    if (params?.east !== undefined && params.east !== null)
+      queryParams.append("east", params.east.toString());
 
-    // Mock: aplicar filtros localmente (simula resposta do backend)
-    let results = mockListings;
+    // Adicionar filtros de preço
+    if (params?.minPrice)
+      queryParams.append("min_price", params.minPrice.toString());
+    if (params?.maxPrice)
+      queryParams.append("max_price", params.maxPrice.toString());
 
-    // Gerar campos adicionais da Consulta 1 (totalAmenities, availableDaysInPeriod)
-    results = results.map((listing) => {
-      // totalAmenities: usar a contagem real de amenidades da propriedade
-      const totalAmenities = listing.property.amenities.length;
+    // Adicionar filtros de qualidade
+    if (params?.minRating)
+      queryParams.append("min_rating", params.minRating.toString());
+    if (params?.minCapacity)
+      queryParams.append("min_capacity", params.minCapacity.toString());
+    if (params?.minReviews)
+      queryParams.append("min_reviews", params.minReviews.toString());
 
-      // availableDaysInPeriod: mock - se datas foram fornecidas, calcular dias disponíveis
-      let availableDaysInPeriod: number | undefined = undefined;
-      if (params?.checkInDate && params?.checkOutDate) {
-        const checkIn = new Date(params.checkInDate);
-        const checkOut = new Date(params.checkOutDate);
-        const totalDays = Math.ceil(
-          (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
-        );
-        // Mock: entre 50% e 100% dos dias estão disponíveis
-        availableDaysInPeriod = Math.floor(
-          totalDays * (0.5 + Math.random() * 0.5)
-        );
-      }
+    // Adicionar filtro de superhost
+    if (params?.superhostOnly !== undefined)
+      queryParams.append("superhost_only", params.superhostOnly.toString());
 
-      return {
-        ...listing,
-        property: {
-          ...listing.property,
-          totalAmenities,
-          availableDaysInPeriod,
-        },
-      };
-    });
+    // Adicionar filtros de disponibilidade
+    if (params?.checkInDate) queryParams.append("check_in", params.checkInDate);
+    if (params?.checkOutDate)
+      queryParams.append("check_out", params.checkOutDate);
+    if (params?.minAvailableDays)
+      queryParams.append(
+        "min_available_days",
+        params.minAvailableDays.toString()
+      );
 
-    // Filtrar por bounds (se fornecidos)
-    if (
-      params?.north !== undefined &&
-      params?.south !== undefined &&
-      params?.east !== undefined &&
-      params?.west !== undefined
-    ) {
-      results = results.filter((listing) => {
-        const lat = listing.property.latitude;
-        const lng = listing.property.longitude;
-        return (
-          lat <= params.north! &&
-          lat >= params.south! &&
-          lng <= params.east! &&
-          lng >= params.west!
-        );
-      });
+    // Adicionar bairros (multi-seleção)
+    if (params?.neighborhoods?.length) {
+      queryParams.append("neighborhoods", params.neighborhoods.join(","));
     }
 
-    // Aplicar filtros de busca
-    results = results.filter((listing) => {
-      if (params?.minPrice && listing.price < params.minPrice) return false;
-      if (params?.maxPrice && listing.price > params.maxPrice) return false;
-      if (
-        params?.neighborhoods &&
-        params.neighborhoods.length > 0 &&
-        !params.neighborhoods.includes(listing.property.neighborhood)
-      )
-        return false;
-      if (params?.minRating && listing.rating < params.minRating) return false;
-      if (params?.minCapacity && listing.property.capacity < params.minCapacity)
-        return false;
-      if (params?.minReviews && listing.numberOfReviews < params.minReviews)
-        return false;
-      if (params?.superhostOnly && !listing.host.isSuperhost) return false;
-
-      // Filtro de disponibilidade: se datas foram fornecidas, verificar disponibilidade
-      if (params?.checkInDate && params?.checkOutDate) {
-        // Mock: 70% das propriedades estão disponíveis nas datas solicitadas
-        const hasAvailability = Math.random() > 0.3;
-        if (!hasAvailability) return false;
-
-        // Se minAvailableDays foi especificado, verificar
-        if (
-          params?.minAvailableDays &&
-          listing.property.availableDaysInPeriod
-        ) {
-          if (
-            listing.property.availableDaysInPeriod < params.minAvailableDays
-          ) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    });
-
-    // Simplificação por zoom (se fornecido)
-    if (params?.zoom !== undefined && params.zoom !== null) {
+    // Adicionar limit baseado no zoom
+    if (params?.zoom !== undefined && params?.zoom !== null) {
       if (params.zoom < 12) {
-        // Zoom < 12: Mostrar apenas 20% dos pontos (melhor avaliados)
-        results = results
-          .sort(
-            (a, b) =>
-              b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
-          )
-          .slice(0, Math.ceil(results.length * 0.2));
+        queryParams.append("limit", "500");
       } else if (params.zoom < 14) {
-        // Zoom 12-14: Mostrar 50% dos pontos
-        results = results
-          .sort((a, b) => b.rating - a.rating)
-          .slice(0, Math.ceil(results.length * 0.5));
+        queryParams.append("limit", "2000");
       }
-      // Zoom >= 14: Mostrar todos
+      // Zoom >= 14: sem limite (retorna todos os resultados filtrados)
     }
 
-    // Ordenar por relevância (rating e reviews)
-    results.sort(
-      (a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
-    );
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/listings/search?${queryParams.toString()}`
+      );
 
-    return results;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map(transformBackendListing);
+    } catch (error) {
+      console.error("Erro ao buscar listings:", error);
+      throw error;
+    }
   },
 
   // Alias para manter compatibilidade (sem filtros = listar todas)
@@ -412,312 +185,254 @@ export const api = {
 
   // Obter listing por ID
   getListingById: async (id: string): Promise<Listing | null> => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return mockListings.find((listing) => listing.id === id) || null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/listings/${id}`);
+
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return transformBackendListing(data);
+    } catch (error) {
+      console.error("Erro ao buscar listing por ID:", error);
+      return null;
+    }
   },
 
   // CONSULTA 2: Obter amenidades de uma propriedade específica
   getPropertyAmenities: async (propertyId: string): Promise<string[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/properties/${propertyId}/amenities`
+      );
 
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/amenities`);
-    // return await response.json();
-
-    // Mock: buscar amenidades da propriedade
-    const listing = mockListings.find((l) => l.propertyId === propertyId);
-    return listing?.property.amenities || [];
-  },
-
-  // Obter estatísticas por bairros agregadas por bairro
-  getNeighborhoodStats: async (): Promise<NeighborhoodStats[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const response = await fetch('http://localhost:8000/api/neighborhoods/stats');
-    // return await response.json();
-
-    const statsByNeighborhood = new Map<
-      string,
-      {
-        totalPrice: number;
-        totalRating: number;
-        totalCapacity: number;
-        totalBedrooms: number;
-        totalBathrooms: number;
-        totalReviews: number;
-        count: number;
-        ratedCount: number;
-        superhostCount: number;
-        verifiedCount: number;
-      }
-    >();
-
-    mockListings.forEach((listing) => {
-      const neighborhood = listing.property.neighborhood;
-      const current = statsByNeighborhood.get(neighborhood) || {
-        totalPrice: 0,
-        totalRating: 0,
-        totalCapacity: 0,
-        totalBedrooms: 0,
-        totalBathrooms: 0,
-        totalReviews: 0,
-        count: 0,
-        ratedCount: 0,
-        superhostCount: 0,
-        verifiedCount: 0,
-      };
-
-      current.totalPrice += listing.price;
-      current.totalCapacity += listing.property.capacity;
-      current.totalBedrooms += listing.property.bedrooms;
-      current.totalBathrooms += listing.property.bathrooms;
-      current.totalReviews += listing.numberOfReviews;
-      current.count += 1;
-
-      if (listing.rating > 0) {
-        current.totalRating += listing.rating;
-        current.ratedCount += 1;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      if (listing.host.isSuperhost) {
-        current.superhostCount += 1;
-      }
-
-      if (listing.host.verified) {
-        current.verifiedCount += 1;
-      }
-
-      statsByNeighborhood.set(neighborhood, current);
-    });
-
-    return Array.from(statsByNeighborhood.entries())
-      .map(([neighborhood, stats]) => ({
-        neighborhood,
-        totalListings: stats.count,
-        averagePrice: Math.round(stats.totalPrice / stats.count),
-        averageRating:
-          stats.ratedCount > 0
-            ? Number((stats.totalRating / stats.ratedCount).toFixed(2))
-            : 0,
-        averageCapacity: Number((stats.totalCapacity / stats.count).toFixed(1)),
-        averageBedrooms: Number((stats.totalBedrooms / stats.count).toFixed(1)),
-        averageBathrooms: Number(
-          (stats.totalBathrooms / stats.count).toFixed(1)
-        ),
-        averageReviews: Number((stats.totalReviews / stats.count).toFixed(0)),
-        superhostCount: stats.superhostCount,
-        verifiedCount: stats.verifiedCount,
-      }))
-      .sort((a, b) => b.totalListings - a.totalListings);
-  },
-
-  // Obter dados para heatmap de densidade
-  getDensityHeatmap: async (): Promise<HeatmapPoint[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return mockListings.map((listing) => ({
-      lat: listing.property.latitude,
-      lng: listing.property.longitude,
-      intensity: 1, // Cada ponto tem peso 1 para densidade
-    }));
-  },
-
-  // Obter dados para heatmap de preço
-  getPriceHeatmap: async (): Promise<HeatmapPoint[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const maxPrice = Math.max(...mockListings.map((l) => l.price));
-    return mockListings.map((listing) => ({
-      lat: listing.property.latitude,
-      lng: listing.property.longitude,
-      intensity: listing.price / maxPrice, // Normalizar preço entre 0 e 1
-    }));
-  },
-
-  // CONSULTA 7: Verificar disponibilidade de propriedade
-  getPropertyAvailability: async (_propertyId: string): Promise<string[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/availability`);
-    // return await response.json();
-
-    // Mock: gerar datas disponíveis aleatoriamente para 2025
-    const availableDates: string[] = [];
-    const year = 2025;
-    const start = new Date(2025, 0, 1);
-    const end = new Date(2025, 11, 31);
-
-    // Gerar disponibilidade aleatória (aproximadamente 60% dos dias disponíveis)
-    for (
-      let date = new Date(start);
-      date <= end;
-      date.setDate(date.getDate() + 1)
-    ) {
-      if (date.getFullYear() === year && Math.random() > 0.4) {
-        // 60% de chance de estar disponível
-        const dateStr = date.toISOString().split("T")[0];
-        availableDates.push(dateStr);
-      }
+      const data = await response.json();
+      return data.map((item: any) => item.amenity_name);
+    } catch (error) {
+      console.error("Erro ao buscar amenidades:", error);
+      return [];
     }
+  },
 
-    return availableDates;
+  // CONSULTA 3: Obter estatísticas agregadas por bairro
+  getNeighborhoodStats: async (): Promise<NeighborhoodStats[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/neighborhoods/stats`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((item: any) => ({
+        neighborhood: item.neighborhood,
+        totalListings: item.total_listings,
+        averagePrice: item.average_price,
+        averageRating: item.average_rating,
+        averageCapacity: item.average_capacity,
+        averageBedrooms: item.average_bedrooms,
+        averageBathrooms: item.average_bathrooms,
+        averageReviews: item.average_reviews,
+        superhostCount: item.superhost_count,
+        verifiedCount: item.verified_count,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar estatísticas por bairro:", error);
+      return [];
+    }
+  },
+
+  // CONSULTA 4: Obter dados para heatmap de densidade
+  getDensityHeatmap: async (): Promise<HeatmapPoint[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/heatmap/density`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((item: any) => ({
+        lat: item.lat,
+        lng: item.lng,
+        intensity: item.intensity,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar heatmap de densidade:", error);
+      return [];
+    }
+  },
+
+  // CONSULTA 5: Obter dados para heatmap de preço
+  getPriceHeatmap: async (): Promise<HeatmapPoint[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/heatmap/price`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((item: any) => ({
+        lat: item.lat,
+        lng: item.lng,
+        intensity: item.intensity,
+        price: item.price,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar heatmap de preços:", error);
+      return [];
+    }
+  },
+
+  // CONSULTA 6: Verificar disponibilidade de propriedade
+  getPropertyAvailability: async (propertyId: string): Promise<string[]> => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/properties/${propertyId}/availability`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((item: any) => item.date);
+    } catch (error) {
+      console.error("Erro ao buscar disponibilidade:", error);
+      return [];
+    }
   },
 
   // CONSULTA 7: Obter avaliações de uma propriedade (paginado)
-  // MODIFICAÇÃO: Adicionado campo userTotalReviews (subconsulta)
   getPropertyReviews: async (
     propertyId: string,
     offset: number = 0,
     minYear?: number
   ): Promise<Review[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append("offset", offset.toString());
+      if (minYear) queryParams.append("min_year", minYear.toString());
 
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const queryParams = new URLSearchParams();
-    // queryParams.append('offset', offset.toString());
-    // if (minYear) queryParams.append('min_year', minYear.toString());
-    // const response = await fetch(`http://localhost:8000/properties/${propertyId}/reviews?${queryParams}`);
-    // return await response.json();
+      const response = await fetch(
+        `${API_BASE_URL}/properties/${propertyId}/reviews?${queryParams.toString()}`
+      );
 
-    // Mock: gerar reviews aleatórias
-    const userNames = [
-      "Ana Silva",
-      "Carlos Santos",
-      "Maria Oliveira",
-      "João Pedro",
-      "Juliana Costa",
-      "Rafael Lima",
-      "Beatriz Almeida",
-      "Lucas Ferreira",
-      "Camila Rodrigues",
-      "Fernando Souza",
-      "Patricia Nascimento",
-      "Gustavo Carvalho",
-      "Mariana Gomes",
-      "Ricardo Araujo",
-      "Isabela Martins",
-    ];
-
-    const comments = [
-      "Lugar maravilhoso! A localização é perfeita e o apartamento é exatamente como nas fotos. O anfitrião foi muito atencioso.",
-      "Experiência incrível! A vista é de tirar o fôlego e a acomodação tem tudo que você precisa. Recomendo muito!",
-      "Ótima estadia! O local é limpo, confortável e bem localizado. Voltarei com certeza.",
-      "Adorei a experiência. O apartamento é lindo e o bairro é muito agradável. Perfeito para quem quer conhecer a cidade.",
-      "Superou as expectativas! Tudo impecável, desde a limpeza até os detalhes da decoração. Parabéns ao anfitrião!",
-      "Lugar aconchegante e bem equipado. A comunicação com o anfitrião foi excelente. Recomendo!",
-      "Excelente custo-benefício. O apartamento é confortável e fica perto de tudo. Adoramos!",
-      "Muito bom! O espaço é amplo e bem iluminado. Perfeito para uma estadia relaxante.",
-      "Adoramos tudo! A acomodação é linda e o anfitrião deixou dicas ótimas sobre a região.",
-      "Lugar incrível! Ficamos muito satisfeitos com a limpeza e o conforto. Voltaremos em breve.",
-      "Experiência maravilhosa! O apartamento tem uma localização privilegiada e é muito acolhedor.",
-      "Tudo perfeito! Desde o check-in até o check-out, tudo transcorreu sem problemas.",
-      "Recomendo fortemente! O lugar é lindo, bem decorado e tem tudo que você precisa.",
-      "Estadia incrível! O anfitrião foi super prestativo e a acomodação é de primeira.",
-      "Lugar encantador! A vista é espetacular e o apartamento é muito confortável.",
-    ];
-
-    // Gerar 10 reviews mockadas a partir do offset
-    const reviews: Review[] = [];
-    const totalReviews = 45; // Total mockado de reviews
-
-    for (let i = 0; i < 10 && offset + i < totalReviews; i++) {
-      const reviewIndex = offset + i;
-      const daysAgo = reviewIndex * 7; // Uma review a cada 7 dias
-      const reviewDate = new Date();
-      reviewDate.setDate(reviewDate.getDate() - daysAgo);
-
-      // Filtrar por ano se especificado
-      if (minYear && reviewDate.getFullYear() < minYear) {
-        continue;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const userId = `user-${(reviewIndex % 15) + 1}`;
-      // Simular contagem de reviews do usuário (entre 1 e 20)
-      const userTotalReviews = Math.floor(Math.random() * 20) + 1;
-
-      reviews.push({
-        id: `review-${propertyId}-${reviewIndex}`,
-        propertyId,
-        userId,
-        userName: userNames[reviewIndex % userNames.length],
-        comment: comments[reviewIndex % comments.length],
-        date: reviewDate.toISOString(),
-        userTotalReviews, // Novo campo (subconsulta)
-      });
+      const data = await response.json();
+      return data.map((item: any) => ({
+        id: item.review_id.toString(),
+        propertyId: propertyId,
+        userId: item.user_id.toString(),
+        userName: item.user_name,
+        comment: item.comment,
+        date: item.review_date,
+        userTotalReviews: item.user_total_reviews,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar reviews:", error);
+      return [];
     }
-
-    return reviews;
   },
 
-  // CONSULTA 10: Obter perfil do anfitrião e suas propriedades (paginado)
+  // CONSULTA 9a: Obter perfil do anfitrião
   getHostProfile: async (hostId: string): Promise<HostProfile> => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      const response = await fetch(`${API_BASE_URL}/hosts/${hostId}/profile`);
 
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const response = await fetch(`http://localhost:8000/hosts/${hostId}/profile`);
-    // return await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    // Mock: encontrar host e calcular estatísticas
-    const hostListings = mockListings.filter((l) => l.hostId === hostId);
-    const host = hostListings[0]?.host;
-
-    if (!host) {
-      throw new Error("Host not found");
+      const data = await response.json();
+      return {
+        id: data.host_id.toString(),
+        name: data.host_name,
+        url: data.host_url,
+        joinDate: data.host_join_date,
+        description: data.host_description,
+        isSuperhost: data.is_superhost,
+        verified: data.verified,
+        location: data.host_location,
+        totalProperties: data.total_properties,
+        averageRating: data.average_rating,
+        totalReviews: data.total_reviews,
+      };
+    } catch (error) {
+      console.error("Erro ao buscar perfil do host:", error);
+      throw error;
     }
-
-    const totalProperties = hostListings.length;
-    const totalReviews = hostListings.reduce(
-      (sum, l) => sum + l.numberOfReviews,
-      0
-    );
-
-    // Calcular média ponderada: (nota × qtd_reviews) / total_reviews
-    const weightedSum = hostListings.reduce(
-      (sum, l) => sum + l.rating * l.numberOfReviews,
-      0
-    );
-    const averageRating = totalReviews > 0 ? weightedSum / totalReviews : 0;
-
-    return {
-      ...host,
-      description:
-        "Anfitrião experiente com anos hospedando viajantes de todo o mundo. Adora compartilhar dicas locais e garantir que seus hóspedes tenham a melhor experiência possível no Rio de Janeiro.",
-      location: "Rio de Janeiro, Brasil",
-      url: `https://airbnb.com/users/show/${hostId}`,
-      totalProperties,
-      averageRating: Number(averageRating.toFixed(2)),
-      totalReviews,
-    };
   },
 
-  // CONSULTA 9 (parte 2): Obter propriedades do anfitrião (paginado)
-  // MODIFICAÇÃO: Adicionado campo rankingAmongHostProperties (subconsulta)
+  // CONSULTA 9b: Obter propriedades do anfitrião (paginado)
   getHostProperties: async (
     hostId: string,
     offset: number = 0
   ): Promise<Listing[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.append("offset", offset.toString());
 
-    // TODO: Quando o backend estiver ativo, substituir por:
-    // const queryParams = new URLSearchParams();
-    // queryParams.append('offset', offset.toString());
-    // const response = await fetch(`http://localhost:8000/hosts/${hostId}/properties?${queryParams}`);
-    // return await response.json();
-
-    // Mock: filtrar propriedades do host e paginar
-    const hostListings = mockListings
-      .filter((l) => l.hostId === hostId)
-      .sort(
-        (a, b) => b.rating - a.rating || b.numberOfReviews - a.numberOfReviews
+      const response = await fetch(
+        `${API_BASE_URL}/hosts/${hostId}/properties?${queryParams.toString()}`
       );
 
-    // Calcular ranking de cada propriedade (subconsulta simulada)
-    const listingsWithRanking = hostListings.map((listing, index) => ({
-      ...listing,
-      rankingAmongHostProperties: index + 1, // Ranking baseado na ordenação
-    }));
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    return listingsWithRanking.slice(offset, offset + 5);
+      const data = await response.json();
+      return data.map((item: any) => {
+        const property: Property = {
+          id: item.property_id.toString(),
+          name: item.property_name,
+          description: "",
+          type: item.property_type as any,
+          capacity: item.capacity,
+          bedrooms: item.bedrooms,
+          beds: 0,
+          bathrooms: item.bathrooms,
+          amenities: [],
+          neighborhood: item.neighborhood,
+          latitude: 0,
+          longitude: 0,
+        };
+
+        const host: Host = {
+          id: hostId,
+          name: "",
+          isSuperhost: false,
+          verified: false,
+          joinDate: "",
+        };
+
+        return {
+          id: item.property_id.toString(),
+          propertyId: item.property_id.toString(),
+          hostId: hostId,
+          price: item.price,
+          url: "",
+          rating: item.rating,
+          numberOfReviews: item.number_of_reviews,
+          property,
+          host,
+          rankingAmongHostProperties: item.ranking_among_host_properties,
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao buscar propriedades do host:", error);
+      return [];
+    }
   },
 };
 
