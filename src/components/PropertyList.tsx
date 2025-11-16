@@ -131,26 +131,6 @@ export default function PropertyList({
                       Verificado
                     </Badge>
                   )}
-
-                  {property.totalAmenities !== undefined && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-100 text-green-700 text-xs h-5"
-                    >
-                      <Wifi className="h-2.5 w-2.5 mr-0.5" />
-                      {property.totalAmenities} comodidades
-                    </Badge>
-                  )}
-
-                  {property.availableDaysInPeriod !== undefined && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-purple-100 text-purple-700 text-xs h-5"
-                    >
-                      <Calendar className="h-2.5 w-2.5 mr-0.5" />
-                      {property.availableDaysInPeriod} dias
-                    </Badge>
-                  )}
                 </div>
 
                 {/* Property Details */}

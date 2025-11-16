@@ -30,8 +30,6 @@ export interface Property {
   neighborhood: string;
   latitude: number;
   longitude: number;
-  totalAmenities?: number; // Contagem de amenidades (Consulta 1)
-  availableDaysInPeriod?: number; // Dias disponíveis no período (Consulta 1)
 }
 
 export interface Listing {

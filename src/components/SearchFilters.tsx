@@ -12,7 +12,6 @@ import {
   MessageSquare,
   Award,
   MapPin,
-  Calendar,
 } from "lucide-react";
 import type { SearchFiltersState } from "@/types/filters";
 
@@ -54,9 +53,6 @@ export default function SearchFilters({
       minCapacity: null,
       minReviews: null,
       superhostOnly: false,
-      checkInDate: null,
-      checkOutDate: null,
-      minAvailableDays: null,
     });
   };
 
@@ -68,8 +64,6 @@ export default function SearchFilters({
     filters.minCapacity,
     filters.minReviews,
     filters.superhostOnly,
-    filters.checkInDate,
-    filters.checkOutDate,
   ].filter(Boolean).length;
 
   return (
@@ -281,61 +275,6 @@ export default function SearchFilters({
                   {reviews}+
                 </Button>
               ))}
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Disponibilidade */}
-          <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              Disponibilidade
-            </label>
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600">Check-in</label>
-                <input
-                  type="date"
-                  value={filters.checkInDate || ""}
-                  onChange={(e) =>
-                    updateFilter("checkInDate", e.target.value || null)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-600">Check-out</label>
-                <input
-                  type="date"
-                  value={filters.checkOutDate || ""}
-                  onChange={(e) =>
-                    updateFilter("checkOutDate", e.target.value || null)
-                  }
-                  min={filters.checkInDate || undefined}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-              {filters.checkInDate && filters.checkOutDate && (
-                <div>
-                  <label className="text-xs text-gray-600">
-                    Dias disponíveis mínimos
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="Ex: 5"
-                    value={filters.minAvailableDays || ""}
-                    onChange={(e) =>
-                      updateFilter(
-                        "minAvailableDays",
-                        e.target.value ? Number(e.target.value) : null
-                      )
-                    }
-                    min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  />
-                </div>
-              )}
             </div>
           </div>
 

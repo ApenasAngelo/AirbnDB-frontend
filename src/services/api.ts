@@ -12,14 +12,109 @@ import type {
 const API_BASE_URL = "http://localhost:8000/api";
 
 /**
+ * Interface para dados do backend
+ */
+interface BackendListingData {
+  property_id: number;
+  property_name: string;
+  property_description?: string;
+  property_type: string;
+  capacity: number;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
+  neighborhood: string;
+  latitude: number;
+  longitude: number;
+  room_type?: string;
+  price: number;
+  listing_url: string;
+  rating: number;
+  number_of_reviews: number;
+  host_id: number;
+  host_name: string;
+  is_superhost: boolean;
+  verified: boolean;
+  host_join_date?: string;
+  total_amenities?: number;
+  available_days_in_period?: number;
+  ranking_among_host_properties?: number;
+}
+
+interface BackendAmenityData {
+  amenity_name: string;
+}
+
+interface BackendNeighborhoodStatsData {
+  neighborhood: string;
+  total_listings: number;
+  average_price: number;
+  average_rating: number;
+  average_capacity: number;
+  average_bedrooms: number;
+  average_bathrooms: number;
+  average_reviews: number;
+  superhost_count: number;
+  verified_count: number;
+}
+
+interface BackendHeatmapData {
+  lat: number;
+  lng: number;
+  intensity: number;
+  price?: number;
+}
+
+interface BackendAvailabilityData {
+  date: string;
+}
+
+interface BackendReviewData {
+  review_id: number;
+  user_id: number;
+  user_name: string;
+  comment?: string;
+  review_date: string;
+  user_total_reviews?: number;
+}
+
+interface BackendHostProfileData {
+  host_id: number;
+  host_name: string;
+  host_url?: string;
+  host_join_date?: string;
+  host_description?: string;
+  is_superhost: boolean;
+  verified: boolean;
+  host_location?: string;
+  total_properties: number;
+  average_rating: number;
+  total_reviews: number;
+}
+
+interface BackendHostPropertyData {
+  property_id: number;
+  property_name: string;
+  property_type: string;
+  neighborhood: string;
+  price: number;
+  rating: number;
+  number_of_reviews: number;
+  capacity: number;
+  bedrooms: number;
+  bathrooms: number;
+  ranking_among_host_properties: number;
+}
+
+/**
  * Converte os dados do backend para o formato esperado pelo frontend
  */
-const transformBackendListing = (backendData: any): Listing => {
+const transformBackendListing = (backendData: BackendListingData): Listing => {
   const property: Property = {
     id: backendData.property_id.toString(),
     name: backendData.property_name,
     description: backendData.property_description || "",
-    type: backendData.property_type as any,
+    type: backendData.property_type as "apartment" | "house" | "room" | "other",
     capacity: backendData.capacity,
     bedrooms: backendData.bedrooms,
     beds: backendData.beds,
@@ -28,8 +123,6 @@ const transformBackendListing = (backendData: any): Listing => {
     neighborhood: backendData.neighborhood,
     latitude: backendData.latitude,
     longitude: backendData.longitude,
-    totalAmenities: backendData.total_amenities,
-    availableDaysInPeriod: backendData.available_days_in_period,
   };
 
   const host: Host = {
@@ -37,7 +130,7 @@ const transformBackendListing = (backendData: any): Listing => {
     name: backendData.host_name,
     isSuperhost: backendData.is_superhost,
     verified: backendData.verified,
-    joinDate: backendData.host_join_date,
+    joinDate: backendData.host_join_date || "",
   };
 
   return {
@@ -212,8 +305,8 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => item.amenity_name);
+      const data: BackendAmenityData[] = await response.json();
+      return data.map((item) => item.amenity_name);
     } catch (error) {
       console.error("Erro ao buscar amenidades:", error);
       return [];
@@ -229,8 +322,8 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => ({
+      const data: BackendNeighborhoodStatsData[] = await response.json();
+      return data.map((item) => ({
         neighborhood: item.neighborhood,
         totalListings: item.total_listings,
         averagePrice: item.average_price,
@@ -257,8 +350,8 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => ({
+      const data: BackendHeatmapData[] = await response.json();
+      return data.map((item) => ({
         lat: item.lat,
         lng: item.lng,
         intensity: item.intensity,
@@ -278,8 +371,8 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => ({
+      const data: BackendHeatmapData[] = await response.json();
+      return data.map((item) => ({
         lat: item.lat,
         lng: item.lng,
         intensity: item.intensity,
@@ -302,8 +395,8 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => item.date);
+      const data: BackendAvailabilityData[] = await response.json();
+      return data.map((item) => item.date);
     } catch (error) {
       console.error("Erro ao buscar disponibilidade:", error);
       return [];
@@ -329,15 +422,15 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => ({
+      const data: BackendReviewData[] = await response.json();
+      return data.map((item) => ({
         id: item.review_id.toString(),
         propertyId: propertyId,
         userId: item.user_id.toString(),
         userName: item.user_name,
-        comment: item.comment,
+        comment: item.comment || "",
         date: item.review_date,
-        userTotalReviews: item.user_total_reviews,
+        userTotalReviews: item.user_total_reviews || 0,
       }));
     } catch (error) {
       console.error("Erro ao buscar reviews:", error);
@@ -354,12 +447,12 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: BackendHostProfileData = await response.json();
       return {
         id: data.host_id.toString(),
         name: data.host_name,
         url: data.host_url,
-        joinDate: data.host_join_date,
+        joinDate: data.host_join_date || "",
         description: data.host_description,
         isSuperhost: data.is_superhost,
         verified: data.verified,
@@ -391,13 +484,13 @@ export const api = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.map((item: any) => {
+      const data: BackendHostPropertyData[] = await response.json();
+      return data.map((item) => {
         const property: Property = {
           id: item.property_id.toString(),
           name: item.property_name,
           description: "",
-          type: item.property_type as any,
+          type: item.property_type as "apartment" | "house" | "room" | "other",
           capacity: item.capacity,
           bedrooms: item.bedrooms,
           beds: 0,
