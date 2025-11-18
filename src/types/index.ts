@@ -43,6 +43,7 @@ export interface Listing {
   property: Property;
   host: Host;
   rankingAmongHostProperties?: number; // Ranking da propriedade entre as do anfitrião
+  neighborhoodRanking?: number; // Ranking da propriedade no bairro
 }
 
 export interface Calendar {
@@ -86,6 +87,19 @@ export interface OverviewStats {
   totalSuperhosts: number;
   totalVerifiedHosts: number;
   totalReviews: number;
+}
+
+export interface HostRanking {
+  hostId: number;
+  hostName: string;
+  isSuperhost: boolean;
+  verified: boolean;
+  neighborhood: string;
+  totalProperties: number;
+  avgRating: number;
+  totalReviews: number;
+  avgPrice: number;
+  neighborhoodHostRank: number;
 }
 
 export interface HeatmapPoint {

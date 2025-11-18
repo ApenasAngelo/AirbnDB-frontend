@@ -131,6 +131,17 @@ export default function PropertyList({
                       Verificado
                     </Badge>
                   )}
+
+                  {listing.neighborhoodRanking &&
+                    listing.neighborhoodRanking <= 10 && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-purple-100 text-purple-700 text-xs h-5"
+                      >
+                        <Award className="h-2.5 w-2.5 mr-0.5" />#
+                        {listing.neighborhoodRanking} em {property.neighborhood}
+                      </Badge>
+                    )}
                 </div>
 
                 {/* Property Details */}

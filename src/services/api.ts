@@ -6,6 +6,7 @@ import type {
   NeighborhoodStats,
   HeatmapPoint,
   Review,
+  HostRanking,
 } from "../types";
 
 // Configuração da API
@@ -36,9 +37,8 @@ interface BackendListingData {
   is_superhost: boolean;
   verified: boolean;
   host_join_date?: string;
-  total_amenities?: number;
-  available_days_in_period?: number;
   ranking_among_host_properties?: number;
+  neighborhood_ranking?: number;
 }
 
 interface BackendAmenityData {
@@ -56,6 +56,19 @@ interface BackendNeighborhoodStatsData {
   average_reviews: number;
   superhost_count: number;
   verified_count: number;
+}
+
+interface BackendHostRankingData {
+  host_id: number;
+  host_name: string;
+  is_superhost: boolean;
+  verified: boolean;
+  neighborhood: string;
+  total_properties: number;
+  avg_rating: number;
+  total_reviews: number;
+  avg_price: number;
+  neighborhood_host_rank: number;
 }
 
 interface BackendHeatmapData {
@@ -144,6 +157,7 @@ const transformBackendListing = (backendData: BackendListingData): Listing => {
     property,
     host,
     rankingAmongHostProperties: backendData.ranking_among_host_properties,
+    neighborhoodRanking: backendData.neighborhood_ranking,
   };
 };
 
@@ -524,6 +538,39 @@ export const api = {
       });
     } catch (error) {
       console.error("Erro ao buscar propriedades do host:", error);
+      return [];
+    }
+  },
+
+  // CONSULTA 10: Obter ranking de anfitriões
+  getHostRanking: async (neighborhood?: string): Promise<HostRanking[]> => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (neighborhood) queryParams.append("neighborhood", neighborhood);
+
+      const response = await fetch(
+        `${API_BASE_URL}/hosts/ranking?${queryParams.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: BackendHostRankingData[] = await response.json();
+      return data.map((item) => ({
+        hostId: item.host_id,
+        hostName: item.host_name,
+        isSuperhost: item.is_superhost,
+        verified: item.verified,
+        neighborhood: item.neighborhood,
+        totalProperties: item.total_properties,
+        avgRating: item.avg_rating,
+        totalReviews: item.total_reviews,
+        avgPrice: item.avg_price,
+        neighborhoodHostRank: item.neighborhood_host_rank,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar ranking de hosts:", error);
       return [];
     }
   },

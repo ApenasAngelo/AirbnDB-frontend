@@ -29,7 +29,7 @@ export default function LandingPage() {
 
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Projeto acadêmico de Banco de Dados - Visualização interativa de
-              dados de acomodações Airbnb na cidade maravilhosa
+              dados de acomodações Airbnb da nossa cidade em 2025
             </p>
           </div>
 
@@ -77,8 +77,10 @@ export default function LandingPage() {
           <div className="pt-12 text-sm text-gray-500 space-y-2">
             <p>📚 Trabalho da disciplina de Banco de Dados</p>
             <p>
-              🗃️ Dataset: Airbnb Rio de Janeiro | 🛠️ Tecnologias: React +
-              TypeScript + MySQL
+              🗃️ Dataset: <span></span>
+              <a href="https://insideairbnb.com/" target="_blank">
+                Inside Airbnb - Rio de Janeiro, Rio de Janeiro, Brazil
+              </a>
             </p>
           </div>
         </div>
@@ -87,7 +89,10 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="absolute bottom-0 w-full py-6 text-center text-sm text-gray-500 border-t bg-white/50">
         <p>
-          © 2025 - Projeto Acadêmico | Dados simulados para fins educacionais
+          2025 - Projeto Acadêmico | Dados obtidos via <span></span>
+          <a href="https://insideairbnb.com/" target="_blank">
+            insideairbnb.com
+          </a>
         </p>
       </footer>
     </div>

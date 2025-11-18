@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   Bar,
@@ -17,19 +18,24 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { TrendingUp, Star, Home, DollarSign, Users } from "lucide-react";
+import { TrendingUp, Star, Home, DollarSign, Users, Award } from "lucide-react";
 import api from "@/services/api";
-import type { NeighborhoodStats } from "@/types";
+import type { NeighborhoodStats, HostRanking } from "@/types";
 
 export default function Statistics() {
   const [stats, setStats] = useState<NeighborhoodStats[]>([]);
+  const [hostRankings, setHostRankings] = useState<HostRanking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await api.getNeighborhoodStats();
-        setStats(data);
+        const [statsData, hostsData] = await Promise.all([
+          api.getNeighborhoodStats(),
+          api.getHostRanking(),
+        ]);
+        setStats(statsData);
+        setHostRankings(hostsData);
       } catch (error) {
         console.error("Erro ao carregar estatísticas:", error);
       } finally {
@@ -290,6 +296,30 @@ export default function Statistics() {
                         R$ {stat.averagePrice}
                       </td>
                       <td className="px-4 py-3 text-right">
+                        {stat.priceVsCityAvg !== undefined &&
+                        stat.priceVsCityAvg !== null ? (
+                          <span
+                            className={`inline-flex items-center gap-1 text-xs font-semibold ${
+                              stat.priceVsCityAvg > 0
+                                ? "text-red-600"
+                                : "text-green-600"
+                            }`}
+                          >
+                            {stat.priceVsCityAvg > 0 ? "+" : ""}R${" "}
+                            {stat.priceVsCityAvg}
+                            <TrendingUp
+                              className={`h-3 w-3 ${
+                                stat.priceVsCityAvg > 0
+                                  ? "rotate-0"
+                                  : "rotate-180"
+                              }`}
+                            />
+                          </span>
+                        ) : (
+                          <span className="text-gray-400 text-xs">N/A</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
                         <span className="inline-flex items-center gap-1">
                           {stat.averageRating > 0 ? (
                             <>
@@ -327,6 +357,95 @@ export default function Statistics() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Top Hosts Ranking */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-5 w-5" />
+              Top Anfitriões por Bairro
+            </CardTitle>
+            <CardDescription>
+              Ranking dos melhores anfitriões com múltiplas propriedades
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="relative overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg">
+                  <tr>
+                    <th className="px-4 py-3">Rank</th>
+                    <th className="px-4 py-3">Anfitrião</th>
+                    <th className="px-4 py-3">Bairro</th>
+                    <th className="px-4 py-3 text-right">Propriedades</th>
+                    <th className="px-4 py-3 text-right">Avaliação</th>
+                    <th className="px-4 py-3 text-right">Total Reviews</th>
+                    <th className="px-4 py-3 text-right">Preço Médio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {hostRankings.map((host, index) => (
+                    <tr key={host.hostId} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900">
+                            #{index + 1}
+                          </span>
+                          {index < 3 && (
+                            <Award className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-900">
+                            {host.hostName}
+                          </span>
+                          {host.isSuperhost && (
+                            <Badge variant="destructive" className="text-xs">
+                              Superhost
+                            </Badge>
+                          )}
+                          {host.verified && (
+                            <Badge variant="outline" className="text-xs">
+                              Verificado
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {host.neighborhood}
+                        <span className="ml-2 text-xs text-gray-500">
+                          (#{host.neighborhoodHostRank} no bairro)
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-blue-600">
+                        {host.totalProperties}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="inline-flex items-center gap-1">
+                          {host.avgRating}
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {host.totalReviews}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-green-600">
+                        R$ {host.avgPrice.toFixed(0)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {hostRankings.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  Nenhum anfitrião encontrado
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
