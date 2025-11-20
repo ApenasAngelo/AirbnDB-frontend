@@ -18,24 +18,37 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { TrendingUp, Star, Home, DollarSign, Users, Award } from "lucide-react";
+import {
+  TrendingUp,
+  Star,
+  Home,
+  DollarSign,
+  Users,
+  Award,
+  TrendingUp as Trending,
+} from "lucide-react";
 import api from "@/services/api";
-import type { NeighborhoodStats, HostRanking } from "@/types";
+import type { NeighborhoodStats, HostRanking, TrendingProperty } from "@/types";
 
 export default function Statistics() {
   const [stats, setStats] = useState<NeighborhoodStats[]>([]);
   const [hostRankings, setHostRankings] = useState<HostRanking[]>([]);
+  const [trendingProperties, setTrendingProperties] = useState<
+    TrendingProperty[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [statsData, hostsData] = await Promise.all([
+        const [statsData, hostsData, trendingData] = await Promise.all([
           api.getNeighborhoodStats(),
           api.getHostRanking(),
+          api.getTrendingProperties(),
         ]);
         setStats(statsData);
         setHostRankings(hostsData);
+        setTrendingProperties(trendingData);
       } catch (error) {
         console.error("Erro ao carregar estatísticas:", error);
       } finally {
@@ -357,6 +370,96 @@ export default function Statistics() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Trending Properties */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trending className="h-5 w-5" />
+              Propriedades Mais Populares (Últimos 6 Meses)
+            </CardTitle>
+            <CardDescription>
+              Propriedades com maior engajamento de avaliações recentes
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="relative overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg">
+                  <tr>
+                    <th className="px-4 py-3">Rank</th>
+                    <th className="px-4 py-3">Propriedade</th>
+                    <th className="px-4 py-3">Bairro</th>
+                    <th className="px-4 py-3">Anfitrião</th>
+                    <th className="px-4 py-3 text-right">Reviews (6m)</th>
+                    <th className="px-4 py-3 text-right">Reviewers</th>
+                    <th className="px-4 py-3 text-right">Avaliação</th>
+                    <th className="px-4 py-3 text-right">Preço</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trendingProperties.map((property, index) => (
+                    <tr
+                      key={property.propertyId}
+                      className="border-b hover:bg-gray-50"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900">
+                            #{index + 1}
+                          </span>
+                          {index < 3 && (
+                            <Trending className="h-4 w-4 text-rose-500" />
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-gray-900 line-clamp-2">
+                          {property.propertyName}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {property.neighborhood}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-900">
+                            {property.hostName}
+                          </span>
+                          {property.isSuperhost && (
+                            <Badge variant="destructive" className="text-xs">
+                              Superhost
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-rose-600">
+                        {property.recentReviewsCount}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-blue-600">
+                        {property.uniqueReviewers}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className="inline-flex items-center gap-1">
+                          {property.rating}
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-green-600">
+                        R$ {property.price.toFixed(0)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {trendingProperties.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  Nenhuma propriedade encontrada
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

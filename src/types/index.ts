@@ -102,6 +102,19 @@ export interface HostRanking {
   neighborhoodHostRank: number;
 }
 
+export interface TrendingProperty {
+  propertyId: number;
+  propertyName: string;
+  neighborhood: string;
+  price: number;
+  rating: number;
+  hostName: string;
+  isSuperhost: boolean;
+  recentReviewsCount: number;
+  uniqueReviewers: number;
+  avgCommentLength: number;
+}
+
 export interface HeatmapPoint {
   lat: number;
   lng: number;

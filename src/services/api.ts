@@ -7,6 +7,7 @@ import type {
   HeatmapPoint,
   Review,
   HostRanking,
+  TrendingProperty,
 } from "../types";
 
 // Configuração da API
@@ -69,6 +70,19 @@ interface BackendHostRankingData {
   total_reviews: number;
   avg_price: number;
   neighborhood_host_rank: number;
+}
+
+interface BackendTrendingPropertyData {
+  property_id: number;
+  property_name: string;
+  neighborhood: string;
+  price: number;
+  rating: number;
+  host_name: string;
+  is_superhost: boolean;
+  recent_reviews_count: number;
+  unique_reviewers: number;
+  avg_comment_length: number;
 }
 
 interface BackendHeatmapData {
@@ -571,6 +585,34 @@ export const api = {
       }));
     } catch (error) {
       console.error("Erro ao buscar ranking de hosts:", error);
+      return [];
+    }
+  },
+
+  // CONSULTA 11: Obter propriedades mais avaliadas recentemente
+  getTrendingProperties: async (): Promise<TrendingProperty[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/properties/trending`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: BackendTrendingPropertyData[] = await response.json();
+      return data.map((item) => ({
+        propertyId: item.property_id,
+        propertyName: item.property_name,
+        neighborhood: item.neighborhood,
+        price: item.price,
+        rating: item.rating,
+        hostName: item.host_name,
+        isSuperhost: item.is_superhost,
+        recentReviewsCount: item.recent_reviews_count,
+        uniqueReviewers: item.unique_reviewers,
+        avgCommentLength: item.avg_comment_length,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar propriedades em alta:", error);
       return [];
     }
   },
