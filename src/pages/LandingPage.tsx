@@ -62,14 +62,23 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* CTA Button */}
-          <div className="pt-8">
+          {/* CTA Buttons */}
+          <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               onClick={() => navigate("/map")}
               size="lg"
               className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
-              Explorar Dados
+              <MapPin className="h-5 w-5 mr-2" />
+              Mapa Interativo
+            </Button>
+            <Button
+              onClick={() => navigate("/statistics")}
+              size="lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              <TrendingUp className="h-5 w-5 mr-2" />
+              Dashboard de Estatísticas
             </Button>
           </div>
 

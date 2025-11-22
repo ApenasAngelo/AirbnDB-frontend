@@ -100,6 +100,7 @@ export interface HostRanking {
   totalReviews: number;
   avgPrice: number;
   neighborhoodHostRank: number;
+  originalRank?: number; // Ranking original baseado no critério principal
 }
 
 export interface TrendingProperty {
@@ -113,6 +114,7 @@ export interface TrendingProperty {
   recentReviewsCount: number;
   uniqueReviewers: number;
   avgCommentLength: number;
+  originalRank?: number; // Ranking original baseado em reviews recentes
 }
 
 export interface HeatmapPoint {

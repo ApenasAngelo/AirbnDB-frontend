@@ -5,14 +5,12 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft } from "lucide-react";
 import InteractiveMap from "@/components/InteractiveMap";
 import PropertyDetails from "@/components/PropertyDetails";
 import PropertyList from "@/components/PropertyList";
 import SearchFilters from "@/components/SearchFilters";
-import Statistics from "@/components/Statistics";
 import HostProfile from "@/components/HostProfile";
 import api from "@/services/api";
 import type { Listing, HeatmapMode, HeatmapPoint } from "@/types";
@@ -243,78 +241,65 @@ export default function MapPage() {
           {/* Search/Details Panel */}
           {!isFullWidth && (
             <ResizablePanel defaultSize={40} minSize={25}>
-              <Tabs defaultValue="search" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-2 mx-4 mt-4">
-                  <TabsTrigger value="search">Buscar</TabsTrigger>
-                  <TabsTrigger value="statistics">Estatísticas</TabsTrigger>
-                </TabsList>
+              <div className="h-full flex flex-col bg-white">
+                {/* Botão Voltar quando propriedade ou host selecionado */}
+                {(viewMode === "property" || viewMode === "hostProfile") && (
+                  <div className="px-4 pt-4 pb-2 border-b">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={
+                        viewMode === "hostProfile"
+                          ? handleHostProfileBack
+                          : handleDeselectListing
+                      }
+                    >
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Voltar para resultados
+                    </Button>
+                  </div>
+                )}
 
-                <TabsContent
-                  value="search"
-                  className="flex-1 mt-0 overflow-hidden flex flex-col"
-                >
-                  {/* Botão Voltar quando propriedade selecionada */}
-                  {viewMode === "property" && (
-                    <div className="px-4 pt-4 pb-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleDeselectListing}
-                      >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Voltar para resultados
-                      </Button>
-                    </div>
-                  )}
-
-                  {/* Vista de Busca */}
-                  {viewMode === "search" && (
-                    <div className="flex-1 overflow-hidden flex flex-col">
-                      <SearchFilters
-                        filters={filters}
-                        onFiltersChange={setFilters}
-                        availableNeighborhoods={availableNeighborhoods}
+                {/* Vista de Busca */}
+                {viewMode === "search" && (
+                  <div className="flex-1 overflow-hidden flex flex-col">
+                    <SearchFilters
+                      filters={filters}
+                      onFiltersChange={setFilters}
+                      availableNeighborhoods={availableNeighborhoods}
+                      isLoading={searchLoading}
+                    />
+                    <div className="flex-1 overflow-hidden">
+                      <PropertyList
+                        listings={filteredListings}
+                        onListingSelect={handleListingSelect}
                         isLoading={searchLoading}
                       />
-                      <div className="flex-1 overflow-hidden">
-                        <PropertyList
-                          listings={filteredListings}
-                          onListingSelect={handleListingSelect}
-                          isLoading={searchLoading}
-                        />
-                      </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Vista de Detalhes da Propriedade */}
-                  {viewMode === "property" && selectedListing && (
-                    <div className="flex-1 overflow-hidden">
-                      <PropertyDetails
-                        listing={selectedListing}
-                        onHostClick={handleHostClick}
-                      />
-                    </div>
-                  )}
+                {/* Vista de Detalhes da Propriedade */}
+                {viewMode === "property" && selectedListing && (
+                  <div className="flex-1 overflow-hidden">
+                    <PropertyDetails
+                      listing={selectedListing}
+                      onHostClick={handleHostClick}
+                    />
+                  </div>
+                )}
 
-                  {/* Vista de Perfil do Host */}
-                  {viewMode === "hostProfile" && selectedHostId && (
-                    <div className="flex-1 overflow-hidden">
-                      <HostProfile
-                        hostId={selectedHostId}
-                        onBack={handleHostProfileBack}
-                        onPropertySelect={handleHostPropertySelect}
-                      />
-                    </div>
-                  )}
-                </TabsContent>
-
-                <TabsContent
-                  value="statistics"
-                  className="flex-1 mt-0 overflow-hidden"
-                >
-                  <Statistics />
-                </TabsContent>
-              </Tabs>
+                {/* Vista de Perfil do Host */}
+                {viewMode === "hostProfile" && selectedHostId && (
+                  <div className="flex-1 overflow-hidden">
+                    <HostProfile
+                      hostId={selectedHostId}
+                      onBack={handleHostProfileBack}
+                      onPropertySelect={handleHostPropertySelect}
+                    />
+                  </div>
+                )}
+              </div>
             </ResizablePanel>
           )}
 
