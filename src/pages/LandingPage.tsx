@@ -12,7 +12,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-8 w-8 text-rose-500" />
-            <h1 className="text-2xl font-bold text-gray-900">AirbnbRJ</h1>
+            <h1 className="text-2xl font-bold text-gray-900">AirbnDB</h1>
           </div>
         </div>
       </header>

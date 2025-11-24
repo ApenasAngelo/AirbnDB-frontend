@@ -46,29 +46,11 @@ export default function MapPage() {
     checkOutDate: null,
     minAvailableDays: null,
   });
-  // Estado para lazy loading (desabilitado por padrão para mock data pequeno)
-  const [useLazyLoading] = useState(false);
 
-  // Handler para movimento do mapa (lazy loading)
-  const handleMapMove = async (bounds: {
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-    zoom: number;
-  }) => {
-    if (!useLazyLoading) return;
-
-    try {
-      const results = await api.getListingsByBounds({
-        ...bounds,
-        filters: filters,
-      });
-      setFilteredListings(results);
-    } catch (error) {
-      console.error("Erro ao buscar por bounds:", error);
-    }
-  };
+  // Estados para paginação
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const PAGE_SIZE = 100;
 
   // useEffect para buscar listings com filtros sempre que mudam
   useEffect(() => {
@@ -85,9 +67,26 @@ export default function MapPage() {
         filters.checkInDate ||
         filters.checkOutDate;
 
-      // Se não há filtros ativos, usar todos os listings
+      // Resetar offset quando filtros mudam
+      setOffset(0);
+
+      // Se não há filtros ativos, usar busca padrão com paginação
       if (!hasActiveFilters) {
-        setFilteredListings(allListings);
+        setSearchLoading(true);
+        try {
+          const results = await api.searchListings({
+            limit: PAGE_SIZE,
+            offset: 0,
+          });
+          setFilteredListings(results);
+          setHasMore(results.length === PAGE_SIZE);
+        } catch (error) {
+          console.error("Erro ao buscar listings:", error);
+          setFilteredListings([]);
+          setHasMore(false);
+        } finally {
+          setSearchLoading(false);
+        }
         return;
       }
 
@@ -105,11 +104,15 @@ export default function MapPage() {
           checkInDate: filters.checkInDate,
           checkOutDate: filters.checkOutDate,
           minAvailableDays: filters.minAvailableDays,
+          limit: PAGE_SIZE,
+          offset: 0,
         });
         setFilteredListings(results);
+        setHasMore(results.length === PAGE_SIZE);
       } catch (error) {
         console.error("Erro ao buscar com filtros:", error);
         setFilteredListings([]);
+        setHasMore(false);
       } finally {
         setSearchLoading(false);
       }
@@ -117,6 +120,38 @@ export default function MapPage() {
 
     searchWithFilters();
   }, [allListings, filters]);
+
+  // Função para carregar mais resultados
+  const handleLoadMore = async () => {
+    const newOffset = offset + PAGE_SIZE;
+    setSearchLoading(true);
+
+    try {
+      const results = await api.searchListings({
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        neighborhoods: filters.neighborhoods,
+        minRating: filters.minRating,
+        minCapacity: filters.minCapacity,
+        minReviews: filters.minReviews,
+        superhostOnly: filters.superhostOnly,
+        checkInDate: filters.checkInDate,
+        checkOutDate: filters.checkOutDate,
+        minAvailableDays: filters.minAvailableDays,
+        limit: PAGE_SIZE,
+        offset: newOffset,
+      });
+
+      // Adicionar novos resultados aos existentes
+      setFilteredListings((prev) => [...prev, ...results]);
+      setOffset(newOffset);
+      setHasMore(results.length === PAGE_SIZE);
+    } catch (error) {
+      console.error("Erro ao carregar mais resultados:", error);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
   // Extrair bairros únicos para o filtro
   const availableNeighborhoods = useMemo(() => {
@@ -227,11 +262,6 @@ export default function MapPage() {
               </p>
             </div>
           </div>
-
-          <div className="text-right">
-            <p className="text-sm text-gray-600">Rio de Janeiro</p>
-            <p className="text-xs text-gray-500">Dados do Airbnb</p>
-          </div>
         </div>
       </header>
 
@@ -240,7 +270,7 @@ export default function MapPage() {
         <ResizablePanelGroup direction="horizontal">
           {/* Search/Details Panel */}
           {!isFullWidth && (
-            <ResizablePanel defaultSize={40} minSize={25}>
+            <ResizablePanel defaultSize={25} minSize={25}>
               <div className="h-full flex flex-col bg-white">
                 {/* Botão Voltar quando propriedade ou host selecionado */}
                 {(viewMode === "property" || viewMode === "hostProfile") && (
@@ -274,6 +304,8 @@ export default function MapPage() {
                         listings={filteredListings}
                         onListingSelect={handleListingSelect}
                         isLoading={searchLoading}
+                        hasMore={hasMore}
+                        onLoadMore={handleLoadMore}
                       />
                     </div>
                   </div>
@@ -310,8 +342,8 @@ export default function MapPage() {
 
           {/* Map Panel */}
           <ResizablePanel
-            defaultSize={isFullWidth ? 100 : 60}
-            minSize={30}
+            defaultSize={isFullWidth ? 100 : 75}
+            minSize={60}
             className="relative"
           >
             <InteractiveMap
@@ -324,7 +356,6 @@ export default function MapPage() {
               isFullWidth={isFullWidth}
               densityHeatmapData={densityHeatmapData}
               priceHeatmapData={priceHeatmapData}
-              onMapMove={useLazyLoading ? handleMapMove : undefined}
             />
           </ResizablePanel>
         </ResizablePanelGroup>

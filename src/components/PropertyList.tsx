@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import {
   Star,
   MapPin,
@@ -9,8 +10,7 @@ import {
   Bath,
   Award,
   CheckCircle2,
-  Wifi,
-  Calendar,
+  Loader2,
 } from "lucide-react";
 import type { Listing } from "@/types";
 
@@ -18,15 +18,19 @@ interface PropertyListProps {
   listings: Listing[];
   onListingSelect: (listing: Listing) => void;
   isLoading?: boolean;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
 }
 
 export default function PropertyList({
   listings,
   onListingSelect,
   isLoading = false,
+  hasMore = false,
+  onLoadMore,
 }: PropertyListProps) {
-  // Estado de carregamento
-  if (isLoading) {
+  // Estado de carregamento inicial (sem resultados ainda)
+  if (isLoading && listings.length === 0) {
     return (
       <div className="h-full flex items-center justify-center p-6">
         <div className="text-center space-y-4">
@@ -63,7 +67,7 @@ export default function PropertyList({
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-3 pb-6">
         <div className="text-sm text-gray-600 mb-4">
           <span className="font-semibold">{listings.length}</span>{" "}
           {listings.length === 1
@@ -196,6 +200,26 @@ export default function PropertyList({
             </Card>
           );
         })}
+
+        {/* Botão Ver Mais */}
+        {hasMore && !isLoading && onLoadMore && (
+          <div className="pt-4 pb-2">
+            <Button
+              onClick={onLoadMore}
+              variant="outline"
+              className="w-full h-10 font-medium"
+            >
+              Ver mais propriedades
+            </Button>
+          </div>
+        )}
+
+        {/* Loading ao carregar mais */}
+        {isLoading && listings.length > 0 && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

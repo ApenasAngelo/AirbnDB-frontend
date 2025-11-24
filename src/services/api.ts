@@ -175,17 +175,9 @@ const transformBackendListing = (backendData: BackendListingData): Listing => {
   };
 };
 
-// API Mock Service
 export const api = {
   // CONSULTA 1 UNIFICADA: Buscar listings com filtros opcionais
   searchListings: async (params?: {
-    // Filtros de área (bounds) - para lazy loading
-    north?: number | null;
-    south?: number | null;
-    east?: number | null;
-    west?: number | null;
-    zoom?: number | null;
-
     // Filtros de busca avançada
     minPrice?: number | null;
     maxPrice?: number | null;
@@ -199,18 +191,12 @@ export const api = {
     checkInDate?: string | null;
     checkOutDate?: string | null;
     minAvailableDays?: number | null;
+
+    // Paginação
+    limit?: number;
+    offset?: number;
   }): Promise<Listing[]> => {
     const queryParams = new URLSearchParams();
-
-    // Adicionar parâmetros de bounds
-    if (params?.south !== undefined && params.south !== null)
-      queryParams.append("south", params.south.toString());
-    if (params?.north !== undefined && params.north !== null)
-      queryParams.append("north", params.north.toString());
-    if (params?.west !== undefined && params.west !== null)
-      queryParams.append("west", params.west.toString());
-    if (params?.east !== undefined && params.east !== null)
-      queryParams.append("east", params.east.toString());
 
     // Adicionar filtros de preço
     if (params?.minPrice)
@@ -245,15 +231,9 @@ export const api = {
       queryParams.append("neighborhoods", params.neighborhoods.join(","));
     }
 
-    // Adicionar limit baseado no zoom
-    if (params?.zoom !== undefined && params?.zoom !== null) {
-      if (params.zoom < 12) {
-        queryParams.append("limit", "500");
-      } else if (params.zoom < 14) {
-        queryParams.append("limit", "2000");
-      }
-      // Zoom >= 14: sem limite (retorna todos os resultados filtrados)
-    }
+    // Adicionar paginação
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.offset) queryParams.append("offset", params.offset.toString());
 
     try {
       const response = await fetch(
@@ -275,33 +255,6 @@ export const api = {
   // Alias para manter compatibilidade (sem filtros = listar todas)
   getListings: async (): Promise<Listing[]> => {
     return api.searchListings();
-  },
-
-  // Alias para manter compatibilidade (com bounds)
-  getListingsByBounds: async (params: {
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-    zoom: number;
-    filters?: {
-      minPrice?: number | null;
-      maxPrice?: number | null;
-      neighborhoods?: string[];
-      minRating?: number | null;
-      minCapacity?: number | null;
-      minReviews?: number | null;
-      superhostOnly?: boolean;
-    };
-  }): Promise<Listing[]> => {
-    return api.searchListings({
-      north: params.north,
-      south: params.south,
-      east: params.east,
-      west: params.west,
-      zoom: params.zoom,
-      ...params.filters,
-    });
   },
 
   // Obter listing por ID
