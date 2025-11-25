@@ -47,7 +47,17 @@ pnpm install
 npm install
 ```
 
-3. Inicie o servidor de desenvolvimento:
+3. Configure as variáveis de ambiente:
+
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
+
+# Edite o arquivo .env e configure a URL da API backend
+# VITE_API_BASE_URL=http://localhost:8000/api
+```
+
+4. Inicie o servidor de desenvolvimento:
 
 ```bash
 pnpm dev
@@ -55,4 +65,4 @@ pnpm dev
 npm run dev
 ```
 
-4. Acesse a aplicação em `http://localhost:5173`
+5. Acesse a aplicação em `http://localhost:5173`
