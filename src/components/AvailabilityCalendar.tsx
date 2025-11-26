@@ -20,7 +20,7 @@ export default function AvailabilityCalendar({
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date(2025, 0, 1));
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date(2025, 8, 1));
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -47,13 +47,13 @@ export default function AvailabilityCalendar({
   // Desabilitar datas indisponíveis e datas fora de 2025
   const disabledMatcher = (date: Date): boolean => {
     const year = date.getFullYear();
-    if (year !== 2025) return true;
+    if (year !== 2025 && year !== 2026) return true;
     return !isDateAvailable(date);
   };
 
   // Prevenir navegação fora de 2025
   const handleMonthChange = (date: Date) => {
-    if (date.getFullYear() === 2025) {
+    if (date.getFullYear() === 2025 || date.getFullYear() === 2026) {
       setCurrentMonth(date);
     }
   };
@@ -61,9 +61,11 @@ export default function AvailabilityCalendar({
   // Modificadores para estilizar datas disponíveis
   const modifiers = {
     available: (date: Date) =>
-      date.getFullYear() === 2025 && isDateAvailable(date),
+      (date.getFullYear() === 2025 || date.getFullYear() === 2026) &&
+      isDateAvailable(date),
     unavailable: (date: Date) =>
-      date.getFullYear() === 2025 && !isDateAvailable(date),
+      (date.getFullYear() === 2025 || date.getFullYear() === 2026) &&
+      !isDateAvailable(date),
   };
 
   const modifiersClassNames = {
@@ -127,9 +129,11 @@ export default function AvailabilityCalendar({
               modifiers={modifiers}
               modifiersClassNames={modifiersClassNames}
               className="rounded-md border mx-auto scale-[0.85] md:scale-100 origin-center"
-              fromDate={new Date(2025, 0, 1)}
-              toDate={new Date(2025, 11, 31)}
-              defaultMonth={new Date(2025, 0, 1)}
+              hidden={{
+                before: new Date(2025, 8, 1),
+                after: new Date(2026, 8, 31),
+              }}
+              defaultMonth={new Date(2025, 8, 1)}
               numberOfMonths={1}
             />
           </div>
