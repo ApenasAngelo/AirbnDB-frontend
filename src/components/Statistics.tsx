@@ -417,7 +417,7 @@ export default function Statistics() {
             <div className="overflow-x-auto">
               <div className="max-h-[400px] overflow-y-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-1">
                     <tr>
                       <SortableHeader
                         sortKey="neighborhood"
@@ -570,7 +570,7 @@ export default function Statistics() {
             <div className="overflow-x-auto">
               <div className="max-h-[400px] overflow-y-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-1">
                     <tr>
                       <th className="px-4 py-3">Rank</th>
                       <SortableHeader
@@ -709,7 +709,7 @@ export default function Statistics() {
             <div className="overflow-x-auto">
               <div className="max-h-[400px] overflow-y-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-1">
                     <tr>
                       <th className="px-4 py-3">Rank</th>
                       <SortableHeader
