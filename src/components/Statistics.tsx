@@ -226,7 +226,7 @@ export default function Statistics() {
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6 max-w-full">
         {/* Header */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -413,11 +413,12 @@ export default function Statistics() {
               Visão completa das métricas de cada bairro
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="relative overflow-x-auto max-h-[400px] overflow-y-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
-                  <tr>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <div className="max-h-[400px] overflow-y-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                    <tr>
                     <SortableHeader
                       sortKey="neighborhood"
                       currentSort={statsSortConfig}
@@ -549,6 +550,7 @@ export default function Statistics() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -564,9 +566,10 @@ export default function Statistics() {
               Propriedades com maior engajamento de avaliações recentes
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="relative overflow-x-auto max-h-[400px] overflow-y-auto">
-              <table className="w-full text-sm text-left">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <div className="max-h-[400px] overflow-y-auto">
+                <table className="w-full text-sm text-left">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
                   <tr>
                     <th className="px-4 py-3">Rank</th>
@@ -686,6 +689,7 @@ export default function Statistics() {
                   Nenhuma propriedade encontrada
                 </div>
               )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -701,9 +705,10 @@ export default function Statistics() {
               Ranking dos melhores anfitriões com múltiplas propriedades
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="relative overflow-x-auto max-h-[400px] overflow-y-auto">
-              <table className="w-full text-sm text-left">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <div className="max-h-[400px] overflow-y-auto">
+                <table className="w-full text-sm text-left">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
                   <tr>
                     <th className="px-4 py-3">Rank</th>
@@ -816,6 +821,7 @@ export default function Statistics() {
                   Nenhum anfitrião encontrado
                 </div>
               )}
+              </div>
             </div>
           </CardContent>
         </Card>
