@@ -258,7 +258,7 @@ export default function MapPage() {
                 Dashboard de Acomodações
               </h1>
               <p className="text-sm text-gray-500">
-                {filteredListings.length} de {allListings.length} acomodações
+                {filteredListings.length} de 43.608 acomodações
               </p>
             </div>
           </div>
