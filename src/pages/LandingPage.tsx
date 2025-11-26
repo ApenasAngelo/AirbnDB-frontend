@@ -6,7 +6,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-rose-50 via-white to-pink-50">
+    <div className="min-h-screen bg-linear-to-br from-rose-50 via-white to-pink-50 flex flex-col">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
@@ -18,7 +18,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="container mx-auto px-6 py-20">
+      <main className="container mx-auto px-6 py-20 flex-1">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Title */}
           <div className="space-y-4">
@@ -96,7 +96,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 w-full py-6 text-center text-sm text-gray-500 border-t bg-white/50">
+      <footer className="w-full py-6 text-center text-sm text-gray-500 border-t bg-white/50 mt-auto">
         <p>
           2025 - Projeto Acadêmico | Dados obtidos via <span></span>
           <a href="https://insideairbnb.com/" target="_blank">
