@@ -55,20 +55,22 @@ export default function PropertyReviews({
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base md:text-lg flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             Avaliações
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs md:text-sm">
             {totalReviews} {totalReviews === 1 ? "avaliação" : "avaliações"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-center py-12">
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
-            <p className="text-sm text-gray-500">Carregando avaliações...</p>
+        <CardContent className="flex items-center justify-center py-8 md:py-12">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
+            <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-rose-500" />
+            <p className="text-xs md:text-sm text-gray-500">
+              Carregando avaliações...
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -77,13 +79,15 @@ export default function PropertyReviews({
 
   if (!latestReview) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base md:text-lg flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             Avaliações
           </CardTitle>
-          <CardDescription>Nenhuma avaliação disponível</CardDescription>
+          <CardDescription className="text-xs md:text-sm">
+            Nenhuma avaliação disponível
+          </CardDescription>
         </CardHeader>
       </Card>
     );
@@ -91,46 +95,48 @@ export default function PropertyReviews({
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base md:text-lg flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             Avaliação Mais Recente
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs md:text-sm">
             {totalReviews} {totalReviews === 1 ? "avaliação" : "avaliações"} no
             total
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 md:space-y-4">
           {/* Latest Review */}
-          <div className="space-y-3">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
-                  <User className="h-5 w-5 text-rose-600" />
+          <div className="space-y-2 md:space-y-3 min-w-0">
+            <div className="flex items-start justify-between gap-2 md:gap-3 min-w-0">
+              <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                  <User className="h-4 w-4 md:h-5 md:w-5 text-rose-600" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-gray-900">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+                    <p className="font-semibold text-sm md:text-base text-gray-900 truncate">
                       {latestReview.userName}
                     </p>
                     {latestReview.userTotalReviews &&
                       latestReview.userTotalReviews > 5 && (
-                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
-                          <Award className="h-3 w-3" />
+                        <span className="flex items-center gap-1 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 bg-blue-100 text-blue-700 rounded-full shrink-0">
+                          <Award className="h-2.5 w-2.5 md:h-3 md:w-3" />
                           {latestReview.userTotalReviews} avaliações
                         </span>
                       )}
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Calendar className="h-3 w-3" />
-                    {formatDate(latestReview.date)}
+                  <div className="flex items-center gap-1 text-[10px] md:text-xs text-gray-500">
+                    <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3 shrink-0" />
+                    <span className="truncate">
+                      {formatDate(latestReview.date)}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="text-xs md:text-sm text-gray-700 leading-relaxed wrap-break-word line-clamp-3">
               {latestReview.comment}
             </p>
           </div>
@@ -141,7 +147,7 @@ export default function PropertyReviews({
               <Button
                 onClick={() => setShowAllReviews(true)}
                 variant="outline"
-                className="w-full"
+                className="w-full text-xs md:text-sm"
               >
                 Mostrar mais comentários ({totalReviews - 1}{" "}
                 {totalReviews - 1 === 1 ? "restante" : "restantes"})
@@ -223,14 +229,14 @@ function AllReviewsModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl h-[80vh] flex flex-col">
+      <Card className="w-full max-w-3xl h-[80vh] flex flex-col overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 shrink-0">
-          <div>
-            <CardTitle className="text-xl flex items-center gap-2">
-              <MessageSquare className="h-6 w-6" />
-              Todas as Avaliações
+          <div className="min-w-0 flex-1 mr-2">
+            <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 md:h-6 md:w-6 shrink-0" />
+              <span className="truncate">Todas as Avaliações</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs md:text-sm">
               {totalReviews} {totalReviews === 1 ? "avaliação" : "avaliações"}
             </CardDescription>
           </div>
@@ -238,7 +244,7 @@ function AllReviewsModal({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-8 w-8"
+            className="h-8 w-8 shrink-0"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -247,36 +253,38 @@ function AllReviewsModal({
         <Separator className="shrink-0" />
 
         <ScrollArea className="flex-1 overflow-auto">
-          <div className="space-y-6 py-6 px-6">
+          <div className="space-y-6 py-6 px-4 md:px-6">
             {reviews.map((review, index) => (
-              <div key={review.id}>
+              <div key={review.id} className="min-w-0">
                 <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-                        <User className="h-6 w-6 text-rose-600" />
+                  <div className="flex items-start justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                        <User className="h-5 w-5 md:h-6 md:w-6 text-rose-600" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-gray-900">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+                          <p className="font-semibold text-sm md:text-base text-gray-900 truncate">
                             {review.userName}
                           </p>
                           {review.userTotalReviews &&
                             review.userTotalReviews > 5 && (
-                              <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
-                                <Award className="h-3 w-3" />
+                              <span className="flex items-center gap-1 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full shrink-0">
+                                <Award className="h-2.5 w-2.5 md:h-3 md:w-3" />
                                 {review.userTotalReviews} avaliações
                               </span>
                             )}
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-gray-500">
-                          <Calendar className="h-3.5 w-3.5" />
-                          {formatDate(review.date)}
+                        <div className="flex items-center gap-1 text-xs md:text-sm text-gray-500">
+                          <Calendar className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0" />
+                          <span className="truncate">
+                            {formatDate(review.date)}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed pl-15">
+                  <p className="text-xs md:text-sm text-gray-700 leading-relaxed wrap-break-word line-clamp-3">
                     {review.comment}
                   </p>
                 </div>
@@ -286,18 +294,18 @@ function AllReviewsModal({
 
             {loading && (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
+                <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-rose-500" />
               </div>
             )}
           </div>
         </ScrollArea>
 
         {hasMore && !loading && (
-          <div className="p-6 pt-4 shrink-0 border-t">
+          <div className="p-4 md:p-6 pt-4 shrink-0 border-t">
             <Button
               onClick={handleLoadMore}
               variant="outline"
-              className="w-full"
+              className="w-full text-xs md:text-sm"
             >
               Carregar mais avaliações
             </Button>

@@ -67,7 +67,7 @@ export default function PropertyList({
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-4 space-y-3 pb-6">
+      <div className="p-3 space-y-3 pb-6">
         <div className="text-sm text-gray-600 mb-4">
           <span className="font-semibold">{listings.length}</span>{" "}
           {listings.length === 1
@@ -84,11 +84,11 @@ export default function PropertyList({
               className="cursor-pointer hover:shadow-lg hover:border-rose-300 transition-all duration-200 overflow-hidden"
               onClick={() => onListingSelect(listing)}
             >
-              <CardContent className="p-4">
+              <CardContent className="p-2.5 md:p-3">
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate mb-1">
+                    <h3 className="font-semibold text-sm md:text-base text-gray-900 line-clamp-2 leading-tight mb-1">
                       {property.name}
                     </h3>
                     <div className="flex items-center gap-1 text-xs text-gray-600">
@@ -98,19 +98,21 @@ export default function PropertyList({
                   </div>
 
                   {/* Preço */}
-                  <div className="text-right shrink-0">
-                    <div className="text-lg font-bold text-rose-600">
+                  <div className="text-right shrink-0 min-w-[60px]">
+                    <div className="text-base md:text-lg font-bold text-rose-600 whitespace-nowrap">
                       R$ {price}
                     </div>
-                    <div className="text-xs text-gray-500">/ noite</div>
+                    <div className="text-[10px] md:text-xs text-gray-500 whitespace-nowrap">
+                      / noite
+                    </div>
                   </div>
                 </div>
 
                 {/* Rating e Host Badges */}
-                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                   {rating > 0 && (
-                    <div className="flex items-center gap-1 text-xs">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <div className="flex items-center gap-0.5 text-xs">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 shrink-0" />
                       <span className="font-semibold">{rating}</span>
                       <span className="text-gray-500">({numberOfReviews})</span>
                     </div>
@@ -119,20 +121,22 @@ export default function PropertyList({
                   {host.isSuperhost && (
                     <Badge
                       variant="secondary"
-                      className="bg-rose-100 text-rose-700 text-xs h-5"
+                      className="bg-rose-100 text-rose-700 text-[10px] md:text-xs h-4 md:h-5 px-1.5"
                     >
-                      <Award className="h-2.5 w-2.5 mr-0.5" />
-                      Superhost
+                      <Award className="h-2.5 w-2.5 mr-0.5 shrink-0" />
+                      <span className="hidden sm:inline">Superhost</span>
+                      <span className="sm:hidden">Super</span>
                     </Badge>
                   )}
 
                   {host.verified && (
                     <Badge
                       variant="secondary"
-                      className="bg-blue-100 text-blue-700 text-xs h-5"
+                      className="bg-blue-100 text-blue-700 text-[10px] md:text-xs h-4 md:h-5 px-1.5"
                     >
-                      <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
-                      Verificado
+                      <CheckCircle2 className="h-2.5 w-2.5 mr-0.5 shrink-0" />
+                      <span className="hidden sm:inline">Verificado</span>
+                      <span className="sm:hidden">✓</span>
                     </Badge>
                   )}
 
@@ -140,57 +144,63 @@ export default function PropertyList({
                     listing.neighborhoodRanking <= 10 && (
                       <Badge
                         variant="secondary"
-                        className="bg-purple-100 text-purple-700 text-xs h-5"
+                        className="bg-purple-100 text-purple-700 text-[10px] md:text-xs h-4 md:h-5 px-1.5"
                       >
-                        <Award className="h-2.5 w-2.5 mr-0.5" />#
-                        {listing.neighborhoodRanking} em {property.neighborhood}
+                        <Award className="h-2.5 w-2.5 mr-0.5 shrink-0" />
+                        <span className="hidden sm:inline">
+                          #{listing.neighborhoodRanking} em{" "}
+                          {property.neighborhood}
+                        </span>
+                        <span className="sm:hidden">
+                          #{listing.neighborhoodRanking}
+                        </span>
                       </Badge>
                     )}
                 </div>
 
                 {/* Property Details */}
-                <div className="flex items-center gap-4 text-xs text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <Users className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-600 flex-wrap">
+                  <div className="flex items-center gap-0.5 md:gap-1">
+                    <Users className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0" />
                     <span>{property.capacity}</span>
                   </div>
 
-                  <div className="flex items-center gap-1">
-                    <Bed className="h-3.5 w-3.5" />
-                    <span>
+                  <div className="flex items-center gap-0.5 md:gap-1">
+                    <Bed className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">
                       {property.bedrooms}{" "}
-                      {property.bedrooms === 1 ? "quarto" : "quartos"}
+                      {property.bedrooms === 1 ? "qt" : "qts"}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1">
-                    <Bath className="h-3.5 w-3.5" />
-                    <span>
+                  <div className="flex items-center gap-0.5 md:gap-1">
+                    <Bath className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">
                       {property.bathrooms}{" "}
-                      {property.bathrooms === 1 ? "banh." : "banh."}
+                      {property.bathrooms === 1 ? "bh." : "bhs."}
                     </span>
                   </div>
                 </div>
 
                 {/* Amenities Preview */}
                 {property.amenities.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="mt-2 pt-2 border-t border-gray-100">
                     <div className="flex flex-wrap gap-1">
-                      {property.amenities.slice(0, 3).map((amenity, index) => (
+                      {property.amenities.slice(0, 2).map((amenity, index) => (
                         <Badge
                           key={index}
                           variant="outline"
-                          className="text-xs h-5 px-2"
+                          className="text-[10px] md:text-xs h-4 md:h-5 px-1.5 md:px-2 truncate max-w-[100px]"
                         >
                           {amenity}
                         </Badge>
                       ))}
-                      {property.amenities.length > 3 && (
+                      {property.amenities.length > 2 && (
                         <Badge
                           variant="outline"
-                          className="text-xs h-5 px-2 text-gray-500"
+                          className="text-[10px] md:text-xs h-4 md:h-5 px-1.5 md:px-2 text-gray-500"
                         >
-                          +{property.amenities.length - 3}
+                          +{property.amenities.length - 2}
                         </Badge>
                       )}
                     </div>

@@ -73,18 +73,20 @@ export default function AvailabilityCalendar({
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <CalendarDays className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base md:text-lg flex items-center gap-2">
+            <CalendarDays className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             Disponibilidade
           </CardTitle>
-          <CardDescription>Verifique as datas disponíveis</CardDescription>
+          <CardDescription className="text-xs md:text-sm">
+            Verifique as datas disponíveis
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-center py-12">
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
-            <p className="text-sm text-gray-500">
+        <CardContent className="flex items-center justify-center py-8 md:py-12">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
+            <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-rose-500" />
+            <p className="text-xs md:text-sm text-gray-500">
               Carregando disponibilidade...
             </p>
           </div>
@@ -100,43 +102,45 @@ export default function AvailabilityCalendar({
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <CalendarDays className="h-5 w-5" />
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base md:text-lg flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
           Disponibilidade em 2025
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-xs md:text-sm">
           {availableCount}{" "}
           {availableCount === 1 ? "dia disponível" : "dias disponíveis"} • Taxa
           de ocupação: {occupancyRate}%
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col items-center">
-        <div className="flex gap-4">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            month={currentMonth}
-            onMonthChange={handleMonthChange}
-            disabled={disabledMatcher}
-            modifiers={modifiers}
-            modifiersClassNames={modifiersClassNames}
-            className="rounded-md border"
-            fromDate={new Date(2025, 0, 1)}
-            toDate={new Date(2025, 11, 31)}
-            defaultMonth={new Date(2025, 0, 1)}
-            numberOfMonths={2}
-          />
+      <CardContent className="flex flex-col items-center p-3 md:p-6">
+        <div className="w-full overflow-x-auto">
+          <div className="flex justify-center min-w-fit">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              month={currentMonth}
+              onMonthChange={handleMonthChange}
+              disabled={disabledMatcher}
+              modifiers={modifiers}
+              modifiersClassNames={modifiersClassNames}
+              className="rounded-md border mx-auto scale-[0.85] md:scale-100 origin-center"
+              fromDate={new Date(2025, 0, 1)}
+              toDate={new Date(2025, 11, 31)}
+              defaultMonth={new Date(2025, 0, 1)}
+              numberOfMonths={1}
+            />
+          </div>
         </div>
-        <div className="mt-4 flex items-center gap-6 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-100 border border-green-200"></div>
+        <div className="mt-3 md:mt-4 flex items-center gap-3 md:gap-6 text-xs md:text-sm text-gray-600 flex-wrap justify-center">
+          <div className="flex items-center gap-1.5 md:gap-2">
+            <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-green-100 border border-green-200 shrink-0"></div>
             <span>Disponível</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-gray-100 border border-gray-200"></div>
+          <div className="flex items-center gap-1.5 md:gap-2">
+            <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-gray-100 border border-gray-200 shrink-0"></div>
             <span>Indisponível</span>
           </div>
         </div>

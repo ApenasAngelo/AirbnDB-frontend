@@ -53,6 +53,9 @@ export default function SearchFilters({
       minCapacity: null,
       minReviews: null,
       superhostOnly: false,
+      checkInDate: null,
+      checkOutDate: null,
+      minAvailableDays: null,
     });
   };
 
@@ -68,27 +71,27 @@ export default function SearchFilters({
 
   return (
     <Card className="border-0 rounded-none shadow-none">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Filtros de Busca
+      <CardHeader className="pb-2 md:pb-3 px-3 md:px-6">
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-base md:text-lg flex items-center gap-2 flex-wrap">
+            <Search className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
+            <span className="shrink-0">Filtros</span>
             {isLoading && (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-rose-500" />
+              <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-rose-500 shrink-0" />
             )}
             {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="text-xs shrink-0">
                 {activeFiltersCount}
               </Badge>
             )}
           </CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2 shrink-0">
             {activeFiltersCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearAllFilters}
-                className="h-8 text-sm"
+                className="h-7 md:h-8 text-xs md:text-sm px-2 md:px-3"
               >
                 Limpar
               </Button>
@@ -97,7 +100,7 @@ export default function SearchFilters({
               variant="ghost"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="h-8 text-sm"
+              className="h-7 md:h-8 text-xs md:text-sm px-2 md:px-3"
             >
               {isExpanded ? "Recolher" : "Expandir"}
             </Button>
@@ -106,11 +109,11 @@ export default function SearchFilters({
       </CardHeader>
 
       {isExpanded && (
-        <CardContent className="space-y-4 pt-0">
+        <CardContent className="space-y-3 md:space-y-4 pt-0 px-3 md:px-6">
           {/* Preço */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <DollarSign className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Faixa de Preço (por noite)
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -125,7 +128,7 @@ export default function SearchFilters({
                       e.target.value ? Number(e.target.value) : null
                     )
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full px-2 md:px-3 py-1.5 md:py-2 border border-gray-300 rounded-md text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
               <div>
@@ -139,7 +142,7 @@ export default function SearchFilters({
                       e.target.value ? Number(e.target.value) : null
                     )
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full px-2 md:px-3 py-1.5 md:py-2 border border-gray-300 rounded-md text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
             </div>
@@ -149,11 +152,11 @@ export default function SearchFilters({
 
           {/* Bairros */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <MapPin className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Bairros
             </label>
-            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+            <div className="flex flex-wrap gap-1.5 md:gap-2 max-h-32 overflow-y-auto">
               {availableNeighborhoods.map((neighborhood) => (
                 <Badge
                   key={neighborhood}
@@ -162,16 +165,16 @@ export default function SearchFilters({
                       ? "default"
                       : "outline"
                   }
-                  className={`cursor-pointer hover:bg-rose-100 transition-colors ${
+                  className={`cursor-pointer hover:bg-rose-100 transition-colors text-xs ${
                     filters.neighborhoods.includes(neighborhood)
                       ? "bg-rose-500 hover:bg-rose-600"
                       : ""
                   }`}
                   onClick={() => toggleNeighborhood(neighborhood)}
                 >
-                  {neighborhood}
+                  <span className="truncate max-w-[120px]">{neighborhood}</span>
                   {filters.neighborhoods.includes(neighborhood) && (
-                    <X className="h-3 w-3 ml-1" />
+                    <X className="h-3 w-3 ml-1 shrink-0" />
                   )}
                 </Badge>
               ))}
@@ -182,11 +185,11 @@ export default function SearchFilters({
 
           {/* Avaliação Mínima */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <Star className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Avaliação Mínima
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 md:gap-2 flex-wrap">
               {[3, 3.5, 4, 4.5, 5].map((rating) => (
                 <Button
                   key={rating}
@@ -198,11 +201,11 @@ export default function SearchFilters({
                       filters.minRating === rating ? null : rating
                     )
                   }
-                  className={
+                  className={`h-7 md:h-8 px-2 md:px-3 text-xs md:text-sm ${
                     filters.minRating === rating
                       ? "bg-rose-500 hover:bg-rose-600"
                       : ""
-                  }
+                  }`}
                 >
                   {rating}★
                 </Button>
@@ -214,11 +217,11 @@ export default function SearchFilters({
 
           {/* Capacidade Mínima */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <Users className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Capacidade Mínima
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 md:gap-2 flex-wrap">
               {[1, 2, 4, 6, 8].map((capacity) => (
                 <Button
                   key={capacity}
@@ -232,11 +235,11 @@ export default function SearchFilters({
                       filters.minCapacity === capacity ? null : capacity
                     )
                   }
-                  className={
+                  className={`h-7 md:h-8 px-2 md:px-3 text-xs md:text-sm ${
                     filters.minCapacity === capacity
                       ? "bg-rose-500 hover:bg-rose-600"
                       : ""
-                  }
+                  }`}
                 >
                   {capacity}+
                 </Button>
@@ -248,11 +251,11 @@ export default function SearchFilters({
 
           {/* Número Mínimo de Avaliações */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <MessageSquare className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <MessageSquare className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Mínimo de Avaliações
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 md:gap-2 flex-wrap">
               {[10, 50, 100, 150].map((reviews) => (
                 <Button
                   key={reviews}
@@ -266,11 +269,11 @@ export default function SearchFilters({
                       filters.minReviews === reviews ? null : reviews
                     )
                   }
-                  className={
+                  className={`h-7 md:h-8 px-2 md:px-3 text-xs md:text-sm ${
                     filters.minReviews === reviews
                       ? "bg-rose-500 hover:bg-rose-600"
                       : ""
-                  }
+                  }`}
                 >
                   {reviews}+
                 </Button>
@@ -282,8 +285,8 @@ export default function SearchFilters({
 
           {/* Superhost */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold flex items-center gap-2">
-              <Award className="h-4 w-4 text-gray-500" />
+            <label className="text-xs md:text-sm font-semibold flex items-center gap-2">
+              <Award className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Superhost
             </label>
             <Button
@@ -292,7 +295,7 @@ export default function SearchFilters({
               onClick={() =>
                 updateFilter("superhostOnly", !filters.superhostOnly)
               }
-              className={`w-full ${
+              className={`w-full h-7 md:h-8 text-xs md:text-sm ${
                 filters.superhostOnly ? "bg-rose-500 hover:bg-rose-600" : ""
               }`}
             >

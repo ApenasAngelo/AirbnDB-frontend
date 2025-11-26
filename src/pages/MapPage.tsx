@@ -270,22 +270,34 @@ export default function MapPage() {
         <ResizablePanelGroup direction="horizontal">
           {/* Search/Details Panel */}
           {!isFullWidth && (
-            <ResizablePanel defaultSize={25} minSize={25}>
+            <ResizablePanel defaultSize={30} minSize={27} maxSize={40}>
               <div className="h-full flex flex-col bg-white">
-                {/* Botão Voltar quando propriedade ou host selecionado */}
-                {(viewMode === "property" || viewMode === "hostProfile") && (
-                  <div className="px-4 pt-4 pb-2 border-b">
+                {/* Botão Voltar quando propriedade selecionada */}
+                {viewMode === "property" && (
+                  <div className="px-3 md:px-4 pt-3 md:pt-4 pb-2 border-b">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={
-                        viewMode === "hostProfile"
-                          ? handleHostProfileBack
-                          : handleDeselectListing
-                      }
+                      onClick={handleDeselectListing}
+                      className="text-xs md:text-sm h-7 md:h-8"
                     >
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Voltar para resultados
+                      <ArrowLeft className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                      Voltar
+                    </Button>
+                  </div>
+                )}
+
+                {/* Botão Voltar quando perfil do host selecionado */}
+                {viewMode === "hostProfile" && (
+                  <div className="px-3 md:px-4 pt-3 md:pt-4 pb-2 border-b">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleHostProfileBack}
+                      className="text-xs md:text-sm h-7 md:h-8"
+                    >
+                      <ArrowLeft className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                      Voltar para propriedade
                     </Button>
                   </div>
                 )}
@@ -315,6 +327,7 @@ export default function MapPage() {
                 {viewMode === "property" && selectedListing && (
                   <div className="flex-1 overflow-hidden">
                     <PropertyDetails
+                      key={selectedListing.id}
                       listing={selectedListing}
                       onHostClick={handleHostClick}
                     />

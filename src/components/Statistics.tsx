@@ -419,137 +419,137 @@ export default function Statistics() {
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
                     <tr>
-                    <SortableHeader
-                      sortKey="neighborhood"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("neighborhood")}
-                    >
-                      Bairro
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="totalListings"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("totalListings")}
-                      align="right"
-                    >
-                      Acomodações
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averagePrice"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averagePrice")}
-                      align="right"
-                    >
-                      Preço Médio
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averageRating"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averageRating")}
-                      align="right"
-                    >
-                      Avaliação
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averageCapacity"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averageCapacity")}
-                      align="right"
-                    >
-                      Capacidade
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averageBedrooms"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averageBedrooms")}
-                      align="right"
-                    >
-                      Quartos
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averageBathrooms"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averageBathrooms")}
-                      align="right"
-                    >
-                      Banheiros
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="averageReviews"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("averageReviews")}
-                      align="right"
-                    >
-                      Reviews
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="superhostCount"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("superhostCount")}
-                      align="right"
-                    >
-                      Superhosts
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="verifiedCount"
-                      currentSort={statsSortConfig}
-                      onSort={() => handleStatsSort("verifiedCount")}
-                      align="right"
-                    >
-                      Verificados
-                    </SortableHeader>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedStats.map((stat, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-gray-900">
-                        {stat.neighborhood}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        {stat.totalListings}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-green-600">
-                        R$ {stat.averagePrice}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="inline-flex items-center gap-1">
-                          {stat.averageRating > 0 ? (
-                            <>
-                              {stat.averageRating}
-                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            </>
-                          ) : (
-                            <span className="text-gray-400">N/A</span>
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
-                        {stat.averageCapacity}
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
-                        {stat.averageBedrooms}
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
-                        {stat.averageBathrooms}
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
-                        {stat.averageReviews}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="text-rose-600 font-medium">
-                          {stat.superhostCount}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="text-blue-600 font-medium">
-                          {stat.verifiedCount}
-                        </span>
-                      </td>
+                      <SortableHeader
+                        sortKey="neighborhood"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("neighborhood")}
+                      >
+                        Bairro
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="totalListings"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("totalListings")}
+                        align="right"
+                      >
+                        Acomodações
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averagePrice"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averagePrice")}
+                        align="right"
+                      >
+                        Preço Médio
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averageRating"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averageRating")}
+                        align="right"
+                      >
+                        Avaliação
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averageCapacity"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averageCapacity")}
+                        align="right"
+                      >
+                        Capacidade
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averageBedrooms"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averageBedrooms")}
+                        align="right"
+                      >
+                        Quartos
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averageBathrooms"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averageBathrooms")}
+                        align="right"
+                      >
+                        Banheiros
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="averageReviews"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("averageReviews")}
+                        align="right"
+                      >
+                        Reviews
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="superhostCount"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("superhostCount")}
+                        align="right"
+                      >
+                        Superhosts
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="verifiedCount"
+                        currentSort={statsSortConfig}
+                        onSort={() => handleStatsSort("verifiedCount")}
+                        align="right"
+                      >
+                        Verificados
+                      </SortableHeader>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {sortedStats.map((stat, index) => (
+                      <tr key={index} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3 font-medium text-gray-900">
+                          {stat.neighborhood}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          {stat.totalListings}
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-green-600">
+                          R$ {stat.averagePrice}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="inline-flex items-center gap-1">
+                            {stat.averageRating > 0 ? (
+                              <>
+                                {stat.averageRating}
+                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                              </>
+                            ) : (
+                              <span className="text-gray-400">N/A</span>
+                            )}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-600">
+                          {stat.averageCapacity}
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-600">
+                          {stat.averageBedrooms}
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-600">
+                          {stat.averageBathrooms}
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-600">
+                          {stat.averageReviews}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="text-rose-600 font-medium">
+                            {stat.superhostCount}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="text-blue-600 font-medium">
+                            {stat.verifiedCount}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </CardContent>
@@ -570,125 +570,125 @@ export default function Statistics() {
             <div className="overflow-x-auto">
               <div className="max-h-[400px] overflow-y-auto">
                 <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
-                  <tr>
-                    <th className="px-4 py-3">Rank</th>
-                    <SortableHeader
-                      sortKey="propertyName"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("propertyName")}
-                    >
-                      Propriedade
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="neighborhood"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("neighborhood")}
-                    >
-                      Bairro
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="hostName"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("hostName")}
-                    >
-                      Anfitrião
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="recentReviewsCount"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("recentReviewsCount")}
-                      align="right"
-                    >
-                      Reviews (6m)
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="uniqueReviewers"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("uniqueReviewers")}
-                      align="right"
-                    >
-                      Reviewers
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="rating"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("rating")}
-                      align="right"
-                    >
-                      Avaliação
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="price"
-                      currentSort={trendingSortConfig}
-                      onSort={() => handleTrendingSort("price")}
-                      align="right"
-                    >
-                      Preço
-                    </SortableHeader>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedTrending.map((property) => (
-                    <tr
-                      key={property.propertyId}
-                      className="border-b hover:bg-gray-50"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-gray-900">
-                            #{property.originalRank}
-                          </span>
-                          {property.originalRank !== undefined &&
-                            property.originalRank <= 3 && (
-                              <Trending className="h-4 w-4 text-rose-500" />
-                            )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-gray-900 line-clamp-2">
-                          {property.propertyName}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700">
-                        {property.neighborhood}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-900">
-                            {property.hostName}
-                          </span>
-                          {property.isSuperhost && (
-                            <Badge variant="destructive" className="text-xs">
-                              Superhost
-                            </Badge>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-rose-600">
-                        {property.recentReviewsCount}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-blue-600">
-                        {property.uniqueReviewers}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="inline-flex items-center gap-1">
-                          {property.rating}
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-green-600">
-                        R$ {property.price.toFixed(0)}
-                      </td>
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                    <tr>
+                      <th className="px-4 py-3">Rank</th>
+                      <SortableHeader
+                        sortKey="propertyName"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("propertyName")}
+                      >
+                        Propriedade
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="neighborhood"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("neighborhood")}
+                      >
+                        Bairro
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="hostName"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("hostName")}
+                      >
+                        Anfitrião
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="recentReviewsCount"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("recentReviewsCount")}
+                        align="right"
+                      >
+                        Reviews (6m)
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="uniqueReviewers"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("uniqueReviewers")}
+                        align="right"
+                      >
+                        Reviewers
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="rating"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("rating")}
+                        align="right"
+                      >
+                        Avaliação
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="price"
+                        currentSort={trendingSortConfig}
+                        onSort={() => handleTrendingSort("price")}
+                        align="right"
+                      >
+                        Preço
+                      </SortableHeader>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {sortedTrending.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  Nenhuma propriedade encontrada
-                </div>
-              )}
+                  </thead>
+                  <tbody>
+                    {sortedTrending.map((property) => (
+                      <tr
+                        key={property.propertyId}
+                        className="border-b hover:bg-gray-50"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-gray-900">
+                              #{property.originalRank}
+                            </span>
+                            {property.originalRank !== undefined &&
+                              property.originalRank <= 3 && (
+                                <Trending className="h-4 w-4 text-rose-500" />
+                              )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-medium text-gray-900 line-clamp-2">
+                            {property.propertyName}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-gray-700">
+                          {property.neighborhood}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-900">
+                              {property.hostName}
+                            </span>
+                            {property.isSuperhost && (
+                              <Badge variant="destructive" className="text-xs">
+                                Superhost
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-rose-600">
+                          {property.recentReviewsCount}
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-blue-600">
+                          {property.uniqueReviewers}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="inline-flex items-center gap-1">
+                            {property.rating}
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-green-600">
+                          R$ {property.price.toFixed(0)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {sortedTrending.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    Nenhuma propriedade encontrada
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
@@ -709,118 +709,121 @@ export default function Statistics() {
             <div className="overflow-x-auto">
               <div className="max-h-[400px] overflow-y-auto">
                 <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
-                  <tr>
-                    <th className="px-4 py-3">Rank</th>
-                    <SortableHeader
-                      sortKey="hostName"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("hostName")}
-                    >
-                      Anfitrião
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="neighborhood"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("neighborhood")}
-                    >
-                      Bairro
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="totalProperties"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("totalProperties")}
-                      align="right"
-                    >
-                      Propriedades
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="avgRating"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("avgRating")}
-                      align="right"
-                    >
-                      Avaliação
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="totalReviews"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("totalReviews")}
-                      align="right"
-                    >
-                      Total Reviews
-                    </SortableHeader>
-                    <SortableHeader
-                      sortKey="avgPrice"
-                      currentSort={hostsSortConfig}
-                      onSort={() => handleHostsSort("avgPrice")}
-                      align="right"
-                    >
-                      Preço Médio
-                    </SortableHeader>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedHosts.map((host) => (
-                    <tr key={host.hostId} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-gray-900">
-                            #{host.originalRank}
-                          </span>
-                          {host.originalRank !== undefined &&
-                            host.originalRank <= 3 && (
-                              <Award className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                            )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900">
-                            {host.hostName}
-                          </span>
-                          {host.isSuperhost && (
-                            <Badge variant="destructive" className="text-xs">
-                              Superhost
-                            </Badge>
-                          )}
-                          {host.verified && (
-                            <Badge variant="outline" className="text-xs">
-                              Verificado
-                            </Badge>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700">
-                        {host.neighborhood}
-                        <span className="ml-2 text-xs text-gray-500">
-                          (#{host.neighborhoodHostRank} no bairro)
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-blue-600">
-                        {host.totalProperties}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="inline-flex items-center gap-1">
-                          {host.avgRating}
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
-                        {host.totalReviews}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-green-600">
-                        R$ {host.avgPrice.toFixed(0)}
-                      </td>
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 rounded-lg sticky top-0 z-10">
+                    <tr>
+                      <th className="px-4 py-3">Rank</th>
+                      <SortableHeader
+                        sortKey="hostName"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("hostName")}
+                      >
+                        Anfitrião
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="neighborhood"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("neighborhood")}
+                      >
+                        Bairro
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="totalProperties"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("totalProperties")}
+                        align="right"
+                      >
+                        Propriedades
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="avgRating"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("avgRating")}
+                        align="right"
+                      >
+                        Avaliação
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="totalReviews"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("totalReviews")}
+                        align="right"
+                      >
+                        Total Reviews
+                      </SortableHeader>
+                      <SortableHeader
+                        sortKey="avgPrice"
+                        currentSort={hostsSortConfig}
+                        onSort={() => handleHostsSort("avgPrice")}
+                        align="right"
+                      >
+                        Preço Médio
+                      </SortableHeader>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {sortedHosts.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  Nenhum anfitrião encontrado
-                </div>
-              )}
+                  </thead>
+                  <tbody>
+                    {sortedHosts.map((host) => (
+                      <tr
+                        key={host.hostId}
+                        className="border-b hover:bg-gray-50"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-gray-900">
+                              #{host.originalRank}
+                            </span>
+                            {host.originalRank !== undefined &&
+                              host.originalRank <= 3 && (
+                                <Award className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                              )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">
+                              {host.hostName}
+                            </span>
+                            {host.isSuperhost && (
+                              <Badge variant="destructive" className="text-xs">
+                                Superhost
+                              </Badge>
+                            )}
+                            {host.verified && (
+                              <Badge variant="outline" className="text-xs">
+                                Verificado
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-gray-700">
+                          {host.neighborhood}
+                          <span className="ml-2 text-xs text-gray-500">
+                            (#{host.neighborhoodHostRank} no bairro)
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-blue-600">
+                          {host.totalProperties}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="inline-flex items-center gap-1">
+                            {host.avgRating}
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-600">
+                          {host.totalReviews}
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-green-600">
+                          R$ {host.avgPrice.toFixed(0)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {sortedHosts.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    Nenhum anfitrião encontrado
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
