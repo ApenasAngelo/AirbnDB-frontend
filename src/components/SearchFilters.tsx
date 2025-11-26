@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Search,
   X,
   DollarSign,
@@ -37,11 +44,17 @@ export default function SearchFilters({
     onFiltersChange({ ...filters, [key]: value });
   };
 
-  const toggleNeighborhood = (neighborhood: string) => {
-    const newNeighborhoods = filters.neighborhoods.includes(neighborhood)
-      ? filters.neighborhoods.filter((n) => n !== neighborhood)
-      : [...filters.neighborhoods, neighborhood];
-    updateFilter("neighborhoods", newNeighborhoods);
+  const addNeighborhood = (neighborhood: string) => {
+    if (!filters.neighborhoods.includes(neighborhood)) {
+      updateFilter("neighborhoods", [...filters.neighborhoods, neighborhood]);
+    }
+  };
+
+  const removeNeighborhood = (neighborhood: string) => {
+    updateFilter(
+      "neighborhoods",
+      filters.neighborhoods.filter((n) => n !== neighborhood)
+    );
   };
 
   const clearAllFilters = () => {
@@ -70,8 +83,8 @@ export default function SearchFilters({
   ].filter(Boolean).length;
 
   return (
-    <Card className="border-0 rounded-none shadow-none">
-      <CardHeader className="pb-2 md:pb-3 px-3 md:px-6">
+    <Card className="border-0 rounded-none shadow-none py-3">
+      <CardHeader className="px-3 md:px-6 gap-0">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-base md:text-lg flex items-center gap-2 flex-wrap">
             <Search className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
@@ -156,29 +169,44 @@ export default function SearchFilters({
               <MapPin className="h-3 w-3 md:h-4 md:w-4 text-gray-500" />
               Bairros
             </label>
-            <div className="flex flex-wrap gap-1.5 md:gap-2 max-h-32 overflow-y-auto">
-              {availableNeighborhoods.map((neighborhood) => (
-                <Badge
-                  key={neighborhood}
-                  variant={
-                    filters.neighborhoods.includes(neighborhood)
-                      ? "default"
-                      : "outline"
-                  }
-                  className={`cursor-pointer hover:bg-rose-100 transition-colors text-xs ${
-                    filters.neighborhoods.includes(neighborhood)
-                      ? "bg-rose-500 hover:bg-rose-600"
-                      : ""
-                  }`}
-                  onClick={() => toggleNeighborhood(neighborhood)}
-                >
-                  <span className="truncate max-w-[120px]">{neighborhood}</span>
-                  {filters.neighborhoods.includes(neighborhood) && (
+            <Select
+              value=""
+              onValueChange={(value) => {
+                if (value) {
+                  addNeighborhood(value);
+                }
+              }}
+            >
+              <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm">
+                <SelectValue placeholder="Selecione um bairro..." />
+              </SelectTrigger>
+              <SelectContent>
+                {availableNeighborhoods
+                  .filter((n) => !filters.neighborhoods.includes(n))
+                  .map((neighborhood) => (
+                    <SelectItem key={neighborhood} value={neighborhood}>
+                      {neighborhood}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            {filters.neighborhoods.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 md:gap-2 max-h-32 overflow-y-auto">
+                {filters.neighborhoods.map((neighborhood) => (
+                  <Badge
+                    key={neighborhood}
+                    variant="default"
+                    className="cursor-pointer bg-rose-500 hover:bg-rose-600 text-xs"
+                    onClick={() => removeNeighborhood(neighborhood)}
+                  >
+                    <span className="truncate max-w-[120px]">
+                      {neighborhood}
+                    </span>
                     <X className="h-3 w-3 ml-1 shrink-0" />
-                  )}
-                </Badge>
-              ))}
-            </div>
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           <Separator />

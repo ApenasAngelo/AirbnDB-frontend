@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ResizablePanelGroup,
@@ -153,26 +153,31 @@ export default function MapPage() {
     }
   };
 
-  // Extrair bairros únicos para o filtro
-  const availableNeighborhoods = useMemo(() => {
-    const neighborhoods = Array.from(
-      new Set(allListings.map((l) => l.property.neighborhood))
-    );
-    return neighborhoods.sort();
-  }, [allListings]);
+  // Estado para armazenar todos os bairros disponíveis
+  const [availableNeighborhoods, setAvailableNeighborhoods] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [listingsData, densityData, priceData] = await Promise.all([
-          api.getListings(),
-          api.getDensityHeatmap(),
-          api.getPriceHeatmap(),
-        ]);
+        const [listingsData, densityData, priceData, neighborhoodStats] =
+          await Promise.all([
+            api.getListings(),
+            api.getDensityHeatmap(),
+            api.getPriceHeatmap(),
+            api.getNeighborhoodStats(),
+          ]);
 
         setAllListings(listingsData);
         setFilteredListings(listingsData);
         setDensityHeatmapData(densityData);
+
+        // Extrair todos os bairros das estatísticas
+        const neighborhoods = neighborhoodStats
+          .map((stat) => stat.neighborhood)
+          .sort();
+        setAvailableNeighborhoods(neighborhoods);
         setPriceHeatmapData(priceData);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -305,12 +310,14 @@ export default function MapPage() {
                 {/* Vista de Busca */}
                 {viewMode === "search" && (
                   <div className="flex-1 overflow-hidden flex flex-col">
-                    <SearchFilters
-                      filters={filters}
-                      onFiltersChange={setFilters}
-                      availableNeighborhoods={availableNeighborhoods}
-                      isLoading={searchLoading}
-                    />
+                    <div className="bg-white shadow-md border-b sticky top-0 z-10">
+                      <SearchFilters
+                        filters={filters}
+                        onFiltersChange={setFilters}
+                        availableNeighborhoods={availableNeighborhoods}
+                        isLoading={searchLoading}
+                      />
+                    </div>
                     <div className="flex-1 overflow-hidden">
                       <PropertyList
                         listings={filteredListings}
