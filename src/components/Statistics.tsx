@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -46,6 +46,9 @@ export default function Statistics() {
   >([]);
   const [loading, setLoading] = useState(true);
 
+  // Ref para prevenir chamadas duplicadas causadas pelo StrictMode
+  const dataLoaded = useRef(false);
+
   // Estados de ordenação para cada tabela
   const [statsSortConfig, setStatsSortConfig] =
     useState<SortConfig<NeighborhoodStats>>(null);
@@ -55,6 +58,12 @@ export default function Statistics() {
     useState<SortConfig<TrendingProperty>>(null);
 
   useEffect(() => {
+    // Prevenir execução duplicada causada pelo StrictMode
+    if (dataLoaded.current) {
+      return;
+    }
+    dataLoaded.current = true;
+
     const fetchStats = async () => {
       try {
         const [statsData, hostsData, trendingData] = await Promise.all([

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,12 +37,48 @@ export default function SearchFilters({
 }: SearchFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Estados locais para debounce dos inputs de preço
+  const [localMinPrice, setLocalMinPrice] = useState<string>("");
+  const [localMaxPrice, setLocalMaxPrice] = useState<string>("");
+
   const updateFilter = <K extends keyof SearchFiltersState>(
     key: K,
     value: SearchFiltersState[K]
   ) => {
     onFiltersChange({ ...filters, [key]: value });
   };
+
+  // Sincronizar estados locais com filtros externos (quando limpar filtros, por exemplo)
+  useEffect(() => {
+    setLocalMinPrice(filters.minPrice ? String(filters.minPrice) : "");
+    setLocalMaxPrice(filters.maxPrice ? String(filters.maxPrice) : "");
+  }, [filters.minPrice, filters.maxPrice]);
+
+  // Debounce para minPrice - aguardar 500ms após o usuário parar de digitar
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const numValue = localMinPrice ? Number(localMinPrice) : null;
+      if (numValue !== filters.minPrice) {
+        updateFilter("minPrice", numValue);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localMinPrice]);
+
+  // Debounce para maxPrice - aguardar 500ms após o usuário parar de digitar
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const numValue = localMaxPrice ? Number(localMaxPrice) : null;
+      if (numValue !== filters.maxPrice) {
+        updateFilter("maxPrice", numValue);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localMaxPrice]);
 
   const addNeighborhood = (neighborhood: string) => {
     if (!filters.neighborhoods.includes(neighborhood)) {
@@ -134,13 +170,8 @@ export default function SearchFilters({
                 <input
                   type="number"
                   placeholder="Mínimo"
-                  value={filters.minPrice || ""}
-                  onChange={(e) =>
-                    updateFilter(
-                      "minPrice",
-                      e.target.value ? Number(e.target.value) : null
-                    )
-                  }
+                  value={localMinPrice}
+                  onChange={(e) => setLocalMinPrice(e.target.value)}
                   className="w-full px-2 md:px-3 py-1.5 md:py-2 border border-gray-300 rounded-md text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
@@ -148,13 +179,8 @@ export default function SearchFilters({
                 <input
                   type="number"
                   placeholder="Máximo"
-                  value={filters.maxPrice || ""}
-                  onChange={(e) =>
-                    updateFilter(
-                      "maxPrice",
-                      e.target.value ? Number(e.target.value) : null
-                    )
-                  }
+                  value={localMaxPrice}
+                  onChange={(e) => setLocalMaxPrice(e.target.value)}
                   className="w-full px-2 md:px-3 py-1.5 md:py-2 border border-gray-300 rounded-md text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>

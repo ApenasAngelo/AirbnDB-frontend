@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ResizablePanelGroup,
@@ -20,7 +20,6 @@ type ViewMode = "search" | "property" | "hostProfile";
 
 export default function MapPage() {
   const navigate = useNavigate();
-  const [allListings, setAllListings] = useState<Listing[]>([]);
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [selectedHostId, setSelectedHostId] = useState<string | null>(null);
@@ -52,8 +51,19 @@ export default function MapPage() {
   const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 100;
 
+  // Refs para prevenir chamadas duplicadas causadas pelo StrictMode
+  const initialDataLoaded = useRef(false);
+  const filtersInitialized = useRef(false);
+
   // useEffect para buscar listings com filtros sempre que mudam
+  // IMPORTANTE: Não incluir allListings nas dependências para evitar chamadas duplicadas!
   useEffect(() => {
+    // Prevenir execução na primeira montagem (aguardar dados estáticos carregarem)
+    if (!filtersInitialized.current) {
+      filtersInitialized.current = true;
+      return;
+    }
+
     const searchWithFilters = async () => {
       // Verificar se algum filtro está ativo
       const hasActiveFilters =
@@ -119,7 +129,7 @@ export default function MapPage() {
     };
 
     searchWithFilters();
-  }, [allListings, filters]);
+  }, [filters]);
 
   // Função para carregar mais resultados
   const handleLoadMore = async () => {
@@ -159,18 +169,22 @@ export default function MapPage() {
   >([]);
 
   useEffect(() => {
+    // Prevenir execução duplicada causada pelo StrictMode
+    if (initialDataLoaded.current) {
+      return;
+    }
+    initialDataLoaded.current = true;
+
     const fetchData = async () => {
       try {
-        const [listingsData, densityData, priceData, neighborhoodStats] =
-          await Promise.all([
-            api.getListings(),
-            api.getDensityHeatmap(),
-            api.getPriceHeatmap(),
-            api.getNeighborhoodStats(),
-          ]);
+        // Carregar apenas dados estáticos (heatmaps e bairros)
+        // Os listings serão carregados pelo useEffect de filtros
+        const [densityData, priceData, neighborhoodStats] = await Promise.all([
+          api.getDensityHeatmap(),
+          api.getPriceHeatmap(),
+          api.getNeighborhoodStats(),
+        ]);
 
-        setAllListings(listingsData);
-        setFilteredListings(listingsData);
         setDensityHeatmapData(densityData);
 
         // Extrair todos os bairros das estatísticas
