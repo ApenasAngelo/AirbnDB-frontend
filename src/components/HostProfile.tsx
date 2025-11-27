@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { api } from "@/services/api";
 import type { HostProfile as HostProfileType, Listing } from "@/types";
+import HostProfileSkeleton from "@/components/skeletons/HostProfileSkeleton";
 
 interface HostProfileProps {
   hostId: string;
@@ -84,14 +85,9 @@ export default function HostProfile({
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center p-6">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-rose-500" />
-          <p className="text-xs md:text-sm text-gray-500">
-            Carregando perfil...
-          </p>
-        </div>
-      </div>
+      <ScrollArea className="h-full">
+        <HostProfileSkeleton />
+      </ScrollArea>
     );
   }
 

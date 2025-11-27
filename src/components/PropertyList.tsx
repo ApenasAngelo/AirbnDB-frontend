@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import type { Listing } from "@/types";
+import PropertyListSkeleton from "@/components/skeletons/PropertyListSkeleton";
 
 interface PropertyListProps {
   listings: Listing[];
@@ -32,17 +33,9 @@ export default function PropertyList({
   // Estado de carregamento inicial (sem resultados ainda)
   if (isLoading && listings.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center p-6">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-rose-500 mx-auto" />
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700">
-              Buscando acomodações...
-            </h3>
-            <p className="text-sm text-gray-500 mt-2">Aplicando filtros</p>
-          </div>
-        </div>
-      </div>
+      <ScrollArea className="h-full">
+        <PropertyListSkeleton />
+      </ScrollArea>
     );
   }
 

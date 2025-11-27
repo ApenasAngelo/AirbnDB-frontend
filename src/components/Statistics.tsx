@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import api from "@/services/api";
 import type { NeighborhoodStats, HostRanking, TrendingProperty } from "@/types";
+import StatisticsSkeleton from "@/components/skeletons/StatisticsSkeleton";
 
 type SortConfig<T> = {
   key: keyof T;
@@ -208,12 +209,9 @@ export default function Statistics() {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto" />
-          <p className="mt-4 text-gray-600">Carregando estatísticas...</p>
-        </div>
-      </div>
+      <ScrollArea className="h-full">
+        <StatisticsSkeleton />
+      </ScrollArea>
     );
   }
 

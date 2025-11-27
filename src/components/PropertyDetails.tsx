@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Star,
   MapPin,
@@ -253,13 +254,10 @@ export default function PropertyDetails({
           </CardHeader>
           <CardContent>
             {loadingAmenities ? (
-              <div className="flex items-center justify-center py-6">
-                <div className="flex flex-col items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin text-rose-500" />
-                  <p className="text-xs md:text-sm text-gray-500">
-                    Carregando comodidades...
-                  </p>
-                </div>
+              <div className="flex flex-wrap gap-1.5">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <Skeleton key={i} className="h-5 w-20 rounded-full" />
+                ))}
               </div>
             ) : amenities.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">

@@ -6,6 +6,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Home, ArrowLeft } from "lucide-react";
 import InteractiveMap from "@/components/InteractiveMap";
 import PropertyDetails from "@/components/PropertyDetails";
@@ -249,10 +250,48 @@ export default function MapPage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-rose-500 mx-auto" />
-          <p className="mt-4 text-lg text-gray-600">Carregando dados...</p>
+      <div className="h-screen flex flex-col bg-white">
+        {/* Header */}
+        <header className="border-b bg-white shadow-sm z-10">
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate("/")}
+                className="hover:bg-gray-100"
+              >
+                <Home className="h-5 w-5" />
+              </Button>
+              <div>
+                <Skeleton className="h-7 w-72 mb-1" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Skeleton */}
+        <div className="flex-1 overflow-hidden">
+          <ResizablePanelGroup direction="horizontal">
+            <ResizablePanel defaultSize={30} minSize={27} maxSize={40}>
+              <div className="h-full flex flex-col bg-white p-4 space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <div className="space-y-3 flex-1">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="h-32 w-full" />
+                  ))}
+                </div>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle className="w-1 bg-gray-200" />
+            <ResizablePanel defaultSize={75} minSize={60}>
+              <div className="h-full bg-gray-100 flex items-center justify-center">
+                <Skeleton className="h-full w-full" />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       </div>
     );
