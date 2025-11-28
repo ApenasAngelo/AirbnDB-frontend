@@ -4,6 +4,7 @@ import type {
   Host,
   HostProfile,
   NeighborhoodStats,
+  OverviewStats,
   HeatmapPoint,
   Review,
   HostRanking,
@@ -132,6 +133,18 @@ interface BackendHostPropertyData {
   bedrooms: number;
   bathrooms: number;
   ranking_among_host_properties: number;
+}
+
+interface BackendOverviewStatsData {
+  total_properties: number;
+  total_hosts: number;
+  total_neighborhoods: number;
+  total_users: number;
+  overall_avg_price: number;
+  overall_avg_rating: number;
+  total_superhosts: number;
+  total_verified_hosts: number;
+  total_reviews: number;
 }
 
 /**
@@ -292,6 +305,33 @@ export const api = {
     } catch (error) {
       console.error("Erro ao buscar amenidades:", error);
       return [];
+    }
+  },
+
+  // CONSULTA 8: Obter estatísticas gerais (overview)
+  getOverviewStats: async (): Promise<OverviewStats> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stats/overview`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: BackendOverviewStatsData = await response.json();
+      return {
+        totalProperties: data.total_properties,
+        totalHosts: data.total_hosts,
+        totalNeighborhoods: data.total_neighborhoods,
+        totalUsers: data.total_users,
+        overallAvgPrice: data.overall_avg_price,
+        overallAvgRating: data.overall_avg_rating,
+        totalSuperhosts: data.total_superhosts,
+        totalVerifiedHosts: data.total_verified_hosts,
+        totalReviews: data.total_reviews,
+      };
+    } catch (error) {
+      console.error("Erro ao buscar estatísticas gerais:", error);
+      throw error;
     }
   },
 
