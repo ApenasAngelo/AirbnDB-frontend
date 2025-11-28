@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Card,
   CardContent,
@@ -227,8 +228,11 @@ function AllReviewsModal({
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-1001 bg-black/50 flex items-center justify-center p-4"
+      style={{ height: "100dvh" }}
+    >
       <Card className="w-full max-w-3xl h-[80vh] flex flex-col overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 shrink-0">
           <div className="min-w-0 flex-1 mr-2">
@@ -312,6 +316,7 @@ function AllReviewsModal({
           </div>
         )}
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 }
